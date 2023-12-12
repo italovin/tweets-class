@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "5386hfM2X/gXLk2G28LtGGOvIWOW9mSteNPbAtYL20QpWrPdY2N8FSS4Ci/5HmkX+CIbP3FC6M9hnDmDLiNFrA==",
+  "success": true,
+  "projectFilePath": "/home/italo/Repos/blazor-test/blazor-test.csproj",
+  "expectedPackageFiles": [
+    "/home/italo/.nuget/packages/microsoft.aspnetcore.app.ref/8.0.0/microsoft.aspnetcore.app.ref.8.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}

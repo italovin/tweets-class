@@ -1,0 +1,41 @@
+{
+  "Files": [
+    {
+      "Id": "/home/italo/Repos/blazor-test/obj/Debug/net8.0/scopedcss/projectbundle/blazor-test.bundle.scp.css",
+      "PackagePath": "staticwebassets/blazor-test.bundle.scp.css"
+    },
+    {
+      "Id": "/home/italo/Repos/blazor-test/wwwroot/app.css",
+      "PackagePath": "staticwebassets/app.css"
+    },
+    {
+      "Id": "/home/italo/Repos/blazor-test/wwwroot/bootstrap/bootstrap.min.css",
+      "PackagePath": "staticwebassets/bootstrap/bootstrap.min.css"
+    },
+    {
+      "Id": "/home/italo/Repos/blazor-test/wwwroot/bootstrap/bootstrap.min.css.map",
+      "PackagePath": "staticwebassets/bootstrap/bootstrap.min.css.map"
+    },
+    {
+      "Id": "/home/italo/Repos/blazor-test/wwwroot/favicon.png",
+      "PackagePath": "staticwebassets/favicon.png"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.blazor-test.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.build.blazor-test.props",
+      "PackagePath": "build\\blazor-test.props"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.buildMultiTargeting.blazor-test.props",
+      "PackagePath": "buildMultiTargeting\\blazor-test.props"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.buildTransitive.blazor-test.props",
+      "PackagePath": "buildTransitive\\blazor-test.props"
+    }
+  ],
+  "ElementsToRemove": []
+}
