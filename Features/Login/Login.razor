@@ -9,8 +9,9 @@
     <input class="input" type="text" placeholder="Enter Username" name="uname" required>
 </div>
 <div>
-    <label for="psw"><b>Password</b></label>
-    <input class="input" type="password" placeholder="Enter Password" name="psw" required>
+    <label for="psw"><b>Chave de acesso</b></label>
+    <input class="input" type="password" placeholder="Insira a chave" name="access-key" required
+    @bind="accessKey">
 </div>
 <div>
     <button class="btn-primary" @onclick="RedirectToQuestions">Login</button>
@@ -18,7 +19,9 @@
 
 @code{
 
+    private string accessKey = "";
     private void RedirectToQuestions(){
+        Console.WriteLine(accessKey);
         NavigationManager.NavigateTo("questions");
     }
 

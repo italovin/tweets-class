@@ -9,55 +9,47 @@ build_property.EnforceExtendedAnalyzerRules =
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = blazor-test
 build_property.RootNamespace = blazor-test
-build_property.ProjectDir = c:\Users\Italo\Desktop\Repos\blazor-test\
+build_property.ProjectDir = /home/italo/Repos/blazor-test/
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 8.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = c:\Users\Italo\Desktop\Repos\blazor-test
+build_property.MSBuildProjectDirectory = /home/italo/Repos/blazor-test
 build_property._RazorSourceGeneratorDebug = 
 
-[c:/Users/Italo/Desktop/Repos/blazor-test/Components/App.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xBcHAucmF6b3I=
+[/home/italo/Repos/blazor-test/Features/App.razor]
+build_metadata.AdditionalFiles.TargetPath = RmVhdHVyZXMvQXBwLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/Italo/Desktop/Repos/blazor-test/Components/Pages/Counter.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xDb3VudGVyLnJhem9y
+[/home/italo/Repos/blazor-test/Features/Error/Error.razor]
+build_metadata.AdditionalFiles.TargetPath = RmVhdHVyZXMvRXJyb3IvRXJyb3IucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/Italo/Desktop/Repos/blazor-test/Components/Pages/Error.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xFcnJvci5yYXpvcg==
+[/home/italo/Repos/blazor-test/Features/Home/Home.razor]
+build_metadata.AdditionalFiles.TargetPath = RmVhdHVyZXMvSG9tZS9Ib21lLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/Italo/Desktop/Repos/blazor-test/Components/Pages/Home.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xIb21lLnJhem9y
+[/home/italo/Repos/blazor-test/Features/Login/Login.razor]
+build_metadata.AdditionalFiles.TargetPath = RmVhdHVyZXMvTG9naW4vTG9naW4ucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/Italo/Desktop/Repos/blazor-test/Components/Pages/Login.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xMb2dpbi5yYXpvcg==
+[/home/italo/Repos/blazor-test/Features/Questions/Questions.razor]
+build_metadata.AdditionalFiles.TargetPath = RmVhdHVyZXMvUXVlc3Rpb25zL1F1ZXN0aW9ucy5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/Italo/Desktop/Repos/blazor-test/Components/Pages/Questions.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xRdWVzdGlvbnMucmF6b3I=
+[/home/italo/Repos/blazor-test/Features/Routes.razor]
+build_metadata.AdditionalFiles.TargetPath = RmVhdHVyZXMvUm91dGVzLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/Italo/Desktop/Repos/blazor-test/Components/Pages/Weather.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xXZWF0aGVyLnJhem9y
+[/home/italo/Repos/blazor-test/Features/_Imports.razor]
+build_metadata.AdditionalFiles.TargetPath = RmVhdHVyZXMvX0ltcG9ydHMucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/Italo/Desktop/Repos/blazor-test/Components/Routes.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xSb3V0ZXMucmF6b3I=
-build_metadata.AdditionalFiles.CssScope = 
+[/home/italo/Repos/blazor-test/Features/Layout/MainLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = RmVhdHVyZXMvTGF5b3V0L01haW5MYXlvdXQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-ji6t2pd0mj
 
-[c:/Users/Italo/Desktop/Repos/blazor-test/Components/_Imports.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xfSW1wb3J0cy5yYXpvcg==
-build_metadata.AdditionalFiles.CssScope = 
-
-[c:/Users/Italo/Desktop/Repos/blazor-test/Components/Layout/MainLayout.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xMYXlvdXRcTWFpbkxheW91dC5yYXpvcg==
-build_metadata.AdditionalFiles.CssScope = b-k4niask2v8
-
-[c:/Users/Italo/Desktop/Repos/blazor-test/Components/Layout/NavMenu.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xMYXlvdXRcTmF2TWVudS5yYXpvcg==
-build_metadata.AdditionalFiles.CssScope = b-pszm7rayfb
+[/home/italo/Repos/blazor-test/Features/Layout/NavMenu.razor]
+build_metadata.AdditionalFiles.TargetPath = RmVhdHVyZXMvTGF5b3V0L05hdk1lbnUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-xkfbkll29b
