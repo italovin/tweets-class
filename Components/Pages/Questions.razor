@@ -1,7 +1,47 @@
 @page "/questions"
 
+<ul>
+    @if(phrases is null){
+        <p><em>Loading...</em></p>
+    } else {
+        @foreach(var phrase in phrases){
+            <li>@phrase</li>
+        }
+    }
+</ul>
+
 <div>
     <button type="submit">Negativo</button>
     <button type="submit">Neutro</button>
     <button type="submit">Positivo</button>
 </div>
+
+@code{
+
+    private List<string>? phrases;
+    protected override async Task OnInitializedAsync(){
+        using FileStream stream = File.OpenRead("./data/treat_tweets.json");
+        PhrasesRoot? phrasesRoot = await JsonSerializer.DeserializeAsync<PhrasesRoot>(stream);
+        if(phrasesRoot is null)
+            return;
+        phrases = SelectRandomPhrases(phrasesRoot.frases, 5);
+    }
+    private List<string> SelectRandomPhrases(List<string>? phrasesInput, int count){
+        if(phrasesInput is null)
+            return new List<string>();
+        List<string> _phrasesInput = new List<string>(phrasesInput);
+        List<string> phrases = new();
+        for (int i = 0; i < count; i++)
+        {
+            if(_phrasesInput.Count <= 0)
+                break;
+            int randomIndex = Random.Shared.Next(_phrasesInput.Count);
+            phrases.Add(_phrasesInput[randomIndex]);
+            _phrasesInput.RemoveAt(randomIndex);
+        }
+        return phrases;
+    }
+    private class PhrasesRoot{
+        public List<string> frases { get; set; } = new();
+    }
+}

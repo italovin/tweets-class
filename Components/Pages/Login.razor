@@ -1,23 +1,25 @@
 @page "/login"
+@rendermode InteractiveServer
+@inject NavigationManager NavigationManager
 
 <PageTitle>Login</PageTitle>
 
 <div>
     <label for="uname"><b>Username</b></label>
-    <input type="text" placeholder="Enter Username" name="uname" required>
+    <input class="input" type="text" placeholder="Enter Username" name="uname" required>
 </div>
 <div>
     <label for="psw"><b>Password</b></label>
-    <input type="password" placeholder="Enter Password" name="psw" required>
+    <input class="input" type="password" placeholder="Enter Password" name="psw" required>
 </div>
 <div>
-    <button type="submit">Login</button>
+    <button class="btn-primary" @onclick="RedirectToQuestions">Login</button>
 </div>
 
 @code{
 
     private void RedirectToQuestions(){
-        NavMan
+        NavigationManager.NavigateTo("questions");
     }
 
 }
