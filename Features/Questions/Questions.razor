@@ -1,33 +1,66 @@
 @page "/questions"
-@using blazor_test.Services
+@using blazor_test.Repositories
 @using blazor_test.Models
-@inject PhrasesService PhrasesService
+@rendermode InteractiveServer
+@attribute [StreamRendering]
 
-<div>
-@if(phrasesText is null){
-    <p><em>Loading...</em></p>
-} else {
-    <p>@phrasesText[currentPhrase]</p>
+@inject PhraseRepository PhraseRepository
+@inject LabelingRepository LabelingRepository
+
+@{
+    if(!finished){
+    <div>
+    @if(phrases is null || phrases.Count == 0){
+        <p><em>Loading...</em></p>
+    } else {
+        <p>@phrases[currentPhraseIndex].Text</p>
+    }
+    </div>
+
+    <div>
+        <button type="submit" @onclick="()=>RespondQuestion(LabelEnum.Negative)">Negativo</button>
+        <button type="submit" @onclick="()=>RespondQuestion(LabelEnum.Neutral)">Neutro</button>
+        <button type="submit" @onclick="()=>RespondQuestion(LabelEnum.Positive)">Positivo</button>
+    </div>
+    } else {
+            <p><b>Classificações concluídas</b></p>
+    }
 }
-</div>
-
-<div>
-    <button type="submit">Negativo</button>
-    <button type="submit">Neutro</button>
-    <button type="submit">Positivo</button>
-</div>
 
 @code{
-
-    private List<string> phrasesText = new();
-
-    private int currentPhrase = 0;
+    private bool finished = false;
+    private List<Phrase> phrases = new();
+    private List<Labeling> labelingsResponse = new();
+    private int currentPhraseIndex = 0;
+    private int phrasesCount = 0;
     protected override async Task OnInitializedAsync(){
-        List<Phrase> phrases = await PhrasesService.GetPhrases(5);
-        foreach(Phrase phrase in phrases){
-            string phraseText = phrase.Text ?? "";
-            phrasesText.Add(phraseText);
+        phrases = await PhraseRepository.GetPhrases(5);
+        phrasesCount = phrases.Count;
+    }
+     private void RespondQuestion(LabelEnum label){ 
+        
+        labelingsResponse.Add(new(){PhraseId = phrases[currentPhraseIndex].Id, 
+        Label = (int)label});
+
+        if(currentPhraseIndex < phrasesCount - 1){
+            currentPhraseIndex++;
+        } else if(currentPhraseIndex == phrasesCount - 1){
+            finished = true;
+        }
+        CheckIfFinished();     
+    }
+    private void CheckIfFinished(){
+        if(finished)
+            SendLabeling();
+    }
+    private async void SendLabeling(){
+        foreach(Labeling labeling in labelingsResponse){
+            await LabelingRepository.LabelPhrase(labeling);
         }
     }
-    
+    private enum LabelEnum{
+        Negative = 0,
+        Neutral = 1,
+        Positive = 2
+    }
 }

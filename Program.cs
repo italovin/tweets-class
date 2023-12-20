@@ -1,17 +1,22 @@
+using System.Text.Json;
 using blazor_test.Configurations;
 using blazor_test.Data;
 using blazor_test.Features;
-using blazor_test.Services;
+using blazor_test.Models;
+using blazor_test.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 
-builder.Services.AddTransient<PhrasesService>();
+
 // Add services to the container.
-builder.Services.AddEntityFrameworkNpgsql().AddDbContext<ConnectionDbContext>(options => options.UseNpgsql(
+builder.Services.AddDbContext<ConnectionDbContext>(options => options.UseNpgsql(
     builder.Configuration.GetConnectionString("PostgresConnection")
 ));
+
+builder.Services.AddTransient<PhraseRepository>();
+builder.Services.AddTransient<LabelingRepository>();
 
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
