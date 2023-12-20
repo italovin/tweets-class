@@ -1,10 +1,13 @@
 @page "/questions"
+@using blazor_test.Services
+@using blazor_test.Models
+@inject PhrasesService PhrasesService
 
 <div>
-@if(phrases is null){
+@if(phrasesText is null){
     <p><em>Loading...</em></p>
 } else {
-    <p>@phrases[currentPhrase]</p>
+    <p>@phrasesText[currentPhrase]</p>
 }
 </div>
 
@@ -16,32 +19,15 @@
 
 @code{
 
-    private List<string>? phrases;
+    private List<string> phrasesText = new();
 
     private int currentPhrase = 0;
     protected override async Task OnInitializedAsync(){
-        using FileStream stream = File.OpenRead("./data/treat_tweets.json");
-        PhrasesRoot? phrasesRoot = await JsonSerializer.DeserializeAsync<PhrasesRoot>(stream);
-        if(phrasesRoot is null)
-            return;
-        phrases = SelectRandomPhrases(phrasesRoot.frases, 5);
-    }
-    private List<string> SelectRandomPhrases(List<string>? phrasesInput, int count){
-        if(phrasesInput is null)
-            return new List<string>();
-        List<string> _phrasesInput = new List<string>(phrasesInput);
-        List<string> phrases = new();
-        for (int i = 0; i < count; i++)
-        {
-            if(_phrasesInput.Count <= 0)
-                break;
-            int randomIndex = Random.Shared.Next(_phrasesInput.Count);
-            phrases.Add(_phrasesInput[randomIndex]);
-            _phrasesInput.RemoveAt(randomIndex);
+        List<Phrase> phrases = await PhrasesService.GetPhrases(5);
+        foreach(Phrase phrase in phrases){
+            string phraseText = phrase.Text ?? "";
+            phrasesText.Add(phraseText);
         }
-        return phrases;
     }
-    private class PhrasesRoot{
-        public List<string> frases { get; set; } = new();
-    }
+    
 }
