@@ -11,7 +11,7 @@ public class PhraseRepository{
         _dbContext = dbContext;
     }
     public async Task<List<Phrase>> GetPhrases(int quantity){
-        List<Phrase> underLabelingPhrases = await _dbContext.Phrases.Where(i => i.Id == 2 && i.Labelings.Count < 5).ToListAsync();
+        List<Phrase> underLabelingPhrases = await _dbContext.Phrases.Where(i => i.Labelings.Count < 5).ToListAsync();
         List<Phrase> phrases = [];
         var rnd = Random.Shared;
         for (int i = 0; i < quantity; i++)

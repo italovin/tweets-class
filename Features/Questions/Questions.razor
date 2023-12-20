@@ -1,7 +1,7 @@
 @page "/questions"
 @using blazor_test.Repositories
 @using blazor_test.Models
-@rendermode InteractiveServer
+@rendermode @(new InteractiveServerRenderMode(false))
 @attribute [StreamRendering]
 
 @inject PhraseRepository PhraseRepository
@@ -11,7 +11,7 @@
     if(!finished){
     <div>
     @if(phrases is null || phrases.Count == 0){
-        <p><em>Loading...</em></p>
+        <p><em>Carregando frases...</em></p>
     } else {
         <p>@phrases[currentPhraseIndex].Text</p>
     }
