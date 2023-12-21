@@ -16,14 +16,15 @@
         <p><em>Não há frases disponíveis</em></p>
     } else {
         <p>@phrases[currentPhraseIndex].Text</p>
+        <div>
+            <button type="submit" @onclick="()=>RespondQuestion(LabelEnum.Negative)">Negativo</button>
+            <button type="submit" @onclick="()=>RespondQuestion(LabelEnum.Neutral)">Neutro</button>
+            <button type="submit" @onclick="()=>RespondQuestion(LabelEnum.Positive)">Positivo</button>
+        </div>
     }
     </div>
 
-    <div>
-        <button type="submit" @onclick="()=>RespondQuestion(LabelEnum.Negative)">Negativo</button>
-        <button type="submit" @onclick="()=>RespondQuestion(LabelEnum.Neutral)">Neutro</button>
-        <button type="submit" @onclick="()=>RespondQuestion(LabelEnum.Positive)">Positivo</button>
-    </div>
+    
     } else {
             <p><b>Classificações concluídas</b></p>
     }
