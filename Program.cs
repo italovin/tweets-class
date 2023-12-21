@@ -11,8 +11,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 // Add services to the container.
-builder.Services.AddDbContext<ConnectionDbContext>(options => options.UseNpgsql(
-    builder.Configuration.GetConnectionString("PostgresConnection")
+builder.Services.AddDbContext<ConnectionDbContext>(options => options.UseSqlite(
+    builder.Configuration.GetConnectionString("SqliteConnection")
 ));
 
 builder.Services.AddTransient<PhraseRepository>();

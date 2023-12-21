@@ -10,8 +10,10 @@
 @{
     if(!finished){
     <div>
-    @if(phrases is null || phrases.Count == 0){
+    @if(phrases is null){
         <p><em>Carregando frases...</em></p>
+    } else if(phrases.Count == 0){
+        <p><em>Não há frases disponíveis</em></p>
     } else {
         <p>@phrases[currentPhraseIndex].Text</p>
     }
@@ -29,7 +31,7 @@
 
 @code{
     private bool finished = false;
-    private List<Phrase> phrases = new();
+    private List<Phrase>? phrases;
     private List<Labeling> labelingsResponse = new();
     private int currentPhraseIndex = 0;
     private int phrasesCount = 0;
@@ -37,26 +39,25 @@
         phrases = await PhraseRepository.GetPhrases(5);
         phrasesCount = phrases.Count;
     }
-     private void RespondQuestion(LabelEnum label){ 
-        
-        labelingsResponse.Add(new(){PhraseId = phrases[currentPhraseIndex].Id, 
-        Label = (int)label});
+     private void RespondQuestion(LabelEnum label){
+        if(phrases is not null){
+            labelingsResponse.Add(new(){PhraseId = phrases[currentPhraseIndex].Id, 
+            Label = (int)label});
 
-        if(currentPhraseIndex < phrasesCount - 1){
-            currentPhraseIndex++;
-        } else if(currentPhraseIndex == phrasesCount - 1){
-            finished = true;
-        }
-        CheckIfFinished();     
+            if(currentPhraseIndex < phrasesCount - 1){
+                currentPhraseIndex++;
+            } else if(currentPhraseIndex == phrasesCount - 1){
+                finished = true;
+            }
+            CheckIfFinished(); 
+        } 
     }
     private void CheckIfFinished(){
         if(finished)
             SendLabeling();
     }
     private async void SendLabeling(){
-        foreach(Labeling labeling in labelingsResponse){
-            await LabelingRepository.LabelPhrase(labeling);
-        }
+        await LabelingRepository.LabelPhrasesList(labelingsResponse);
     }
     private enum LabelEnum{
         Negative = 0,
