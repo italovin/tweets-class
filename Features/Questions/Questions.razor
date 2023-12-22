@@ -1,6 +1,7 @@
 @page "/questions"
 @using blazor_test.Repositories
 @using blazor_test.Models
+@using blazor_test.Features.Questions.Components
 @rendermode @(new InteractiveServerRenderMode(false))
 @attribute [StreamRendering]
 
@@ -17,13 +18,12 @@
     } else {
         <p>@phrases[currentPhraseIndex].Text</p>
         <div>
-            <button type="submit" @onclick="()=>RespondQuestion(LabelEnum.Negative)">Negativo</button>
-            <button type="submit" @onclick="()=>RespondQuestion(LabelEnum.Neutral)">Neutro</button>
-            <button type="submit" @onclick="()=>RespondQuestion(LabelEnum.Positive)">Positivo</button>
+            <QuestionButton label="LabelEnum.Negative" QuestionButtonClicked="RespondQuestion"></QuestionButton>
+            <QuestionButton label="LabelEnum.Neutral" QuestionButtonClicked="RespondQuestion"></QuestionButton>
+            <QuestionButton label="LabelEnum.Positive" QuestionButtonClicked="RespondQuestion"></QuestionButton>
         </div>
     }
     </div>
-
     
     } else {
             <p><b>Classificações concluídas</b></p>
@@ -40,7 +40,7 @@
         phrases = await PhraseRepository.GetPhrases(5);
         phrasesCount = phrases.Count;
     }
-     private void RespondQuestion(LabelEnum label){
+    private void RespondQuestion(LabelEnum label){
         if(phrases is not null){
             labelingsResponse.Add(new(){PhraseId = phrases[currentPhraseIndex].Id, 
             Label = (int)label});
@@ -50,19 +50,11 @@
             } else if(currentPhraseIndex == phrasesCount - 1){
                 finished = true;
             }
-            CheckIfFinished(); 
+            if(finished)
+                SendLabeling();
         } 
-    }
-    private void CheckIfFinished(){
-        if(finished)
-            SendLabeling();
     }
     private async void SendLabeling(){
         await LabelingRepository.LabelPhrasesList(labelingsResponse);
-    }
-    private enum LabelEnum{
-        Negative = 0,
-        Neutral = 1,
-        Positive = 2
     }
 }
