@@ -2,12 +2,12 @@ using blazor_test.Data;
 using blazor_test.Models;
 using Isopoh.Cryptography.Argon2;
 
-public class AccessKeyRepository{
-    private readonly ConnectionDbContext _dbContext;
+namespace blazor_test.Repositories;
 
-    public AccessKeyRepository(ConnectionDbContext dbContext){
-        _dbContext = dbContext;
-    }
+public class AccessKeyRepository(ConnectionDbContext dbContext)
+{
+    private readonly ConnectionDbContext _dbContext = dbContext;
+
     public bool CheckIfRevoked(AccessKey accessKey){
         return accessKey.Revoked == 1;
     }

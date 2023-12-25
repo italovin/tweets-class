@@ -5,12 +5,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace blazor_test.Repositories;
 
-public class PhraseRepository{
-    private readonly ConnectionDbContext _dbContext;
+public class PhraseRepository(ConnectionDbContext dbContext)
+{
+    private readonly ConnectionDbContext _dbContext = dbContext;
 
-    public PhraseRepository(ConnectionDbContext dbContext){
-        _dbContext = dbContext;
-    }
     public async Task<List<Phrase>> GetPhrases(int quantity){
         List<Phrase> underLabelingPhrases = await _dbContext.Phrases.Where(i => i.Labelings.Count < 5).ToListAsync();
         List<Phrase> phrases = [];
