@@ -9,20 +9,7 @@
     [Parameter]
     public EventCallback<LabelEnum> QuestionButtonClicked { get; set; }
     protected override void OnInitialized(){
-        switch(label){
-            case LabelEnum.Negative:
-                buttonText = "Negativo";
-                break;
-            case LabelEnum.Neutral:
-                buttonText = "Neutro";
-                break;
-            case LabelEnum.Positive:
-                buttonText = "Positivo";
-                break;
-            default:
-                buttonText = "Indefinido";
-                break;
-        }
+        buttonText = LabelParser.ParseLabel(label);
     } 
     private async Task CallQuestionButtonClicked(){
         await QuestionButtonClicked.InvokeAsync(label);

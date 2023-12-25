@@ -23,7 +23,7 @@
                 <tr>
                     <td>@(i+1)</td>
                     <td>@Phrases[i].Text</td>
-                    <td>@LabelingsResponse[i].Label</td>
+                    <td>@LabelParser.ParseLabel((LabelEnum)LabelingsResponse[i].Label)</td>
                 </tr>
             }
         </tbody>
