@@ -36,10 +36,10 @@
         <input type="password" placeholder="Chave de autorização" @bind="accessKeyString">
     </div>
     <div>
-        <button class="btn btn-primary" @onclick="CheckAccessKey">Enviar</button>
+        <button class="btn btn-primary" @onclick="SendResponse">Enviar</button>
     </div>
     <div class="text-danger">
-        @accessKeyStatusMessage;
+        @accessKeyStatusMessage.Message
     </div>
 </div>
 }
@@ -52,30 +52,39 @@
     [Parameter]
     public EventCallback<List<Labeling>> LabelingsResponseChanged { get; set; }
     
-    private string accessKeyStatusMessage = "";
+    private KeyValidationMessage accessKeyStatusMessage = new();
     private string accessKeyId = "";
     private string accessKeyString = "";
 
-    private async Task CheckAccessKey(){
-        int id = Convert.ToInt32(accessKeyId.Trim());
-        var accessKey = AccessKeyRepository.GetAccessKey(id);
-        if(accessKey is null){
-            accessKeyStatusMessage = "Id de chave não existe";
-        } else {
-            if(AccessKeyRepository.CheckIfRevoked(accessKey)){
-                accessKeyStatusMessage = "Chave já revogada";
-            } else {
-                if(AccessKeyRepository.ValidateAccessKey(id, accessKeyString) == true){
-                    accessKeyStatusMessage = string.Empty;
-                    await ProtectedSessionStore.DeleteAsync("phrases");
-                    await AccessKeyRepository.RevokeAccessKey(accessKey);
-                    await ToConcludedSection();
-                } else if (AccessKeyRepository.ValidateAccessKey(id, accessKeyString) == false){
-                    accessKeyStatusMessage = "Chave de acesso inválida";
-                }
-            }
+    private async Task SendResponse(){
+        accessKeyStatusMessage = ValidateAccessKeyInput(out AccessKey? accessKey);
+        if(!accessKeyStatusMessage.IsError && accessKey is not null){
+            await AccessKeyRepository.RevokeAccessKey(accessKey);
+            await ProtectedSessionStore.DeleteAsync("phrases");
+            await ToConcludedSection();
         }
+    }
+    private KeyValidationMessage ValidateAccessKeyInput(out AccessKey? accessKey){
+        accessKey = null;
+        string accessKeyIdTrimmed = accessKeyId.Trim();
+        bool parsed = int.TryParse(accessKeyIdTrimmed, out int id);
+        if(!parsed)
+            return new(){ Message = "Id de chave em formato inváldio", IsError = true };
 
+        accessKey = AccessKeyRepository.GetAccessKey(id);
+        if(accessKey is null)
+            return new(){ Message = "Id de chave não existe", IsError = true };
+
+        if(AccessKeyRepository.CheckIfRevoked(accessKey))
+            return new(){ Message = "Chave já revogada", IsError = true };
+            
+        if(AccessKeyRepository.ValidateAccessKey(id, accessKeyString) == true){
+            return new(){ Message = string.Empty};
+        } else if (AccessKeyRepository.ValidateAccessKey(id, accessKeyString) == false){
+            return new(){ Message = "Chave de acesso inválida", IsError = true };
+        } else {
+            return new(){ Message = "Ocorreu algum problema ao buscar a chave", IsError = true };
+        }
     }
 
     private async Task ToFormSection(){
@@ -86,5 +95,8 @@
     private async Task ToConcludedSection(){
         await OnQuestionsStateChanged((int)QuestionsStateEnum.Concluded);
     }
-    
+    private class KeyValidationMessage{
+        public string Message { get; set; } = string.Empty;
+        public bool IsError { get; set; } = false;
+    }
 }
