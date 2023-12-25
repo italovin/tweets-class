@@ -1,0 +1,22 @@
+@using blazor_test.Models
+@inherits QuestionsSection
+
+<h3>Avaliação dos Tweets</h3>
+
+<hr>
+
+<div>
+    <p>Classifique os tweets a seguir conforme o sentimento geral que eles apresentam.
+    </p>
+    <p>As alternativas são: Negativo, Neutro e Positivo.</p>
+</div>
+
+<button class="btn btn-primary" @onclick="ToFormSection">Iniciar</button>
+
+@code{
+    
+    private async Task ToFormSection(){
+        await OnQuestionsStateChanged((int)QuestionsStateEnum.Respond);
+    }
+    
+}

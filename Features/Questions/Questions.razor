@@ -2,59 +2,40 @@
 @using blazor_test.Repositories
 @using blazor_test.Models
 @using blazor_test.Features.Questions.Components
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedSessionStorage ProtectedSessionStore
+@attribute [StreamRendering(true)]
 @rendermode @(new InteractiveServerRenderMode(false))
-@attribute [StreamRendering]
 
 @inject PhraseRepository PhraseRepository
-@inject LabelingRepository LabelingRepository
 
-@{
-    if(!finished){
-    <div>
-    @if(phrases is null){
-        <p><em>Carregando frases...</em></p>
-    } else if(phrases.Count == 0){
-        <p><em>Não há frases disponíveis</em></p>
-    } else {
-        <p>@phrases[currentPhraseIndex].Text</p>
-        <div>
-            <QuestionButton label="LabelEnum.Negative" QuestionButtonClicked="RespondQuestion"></QuestionButton>
-            <QuestionButton label="LabelEnum.Neutral" QuestionButtonClicked="RespondQuestion"></QuestionButton>
-            <QuestionButton label="LabelEnum.Positive" QuestionButtonClicked="RespondQuestion"></QuestionButton>
-        </div>
-    }
-    </div>
-    
-    } else {
-            <p><b>Classificações concluídas</b></p>
-    }
+<PageTitle>Questões</PageTitle>
+
+@if(questionsState == (int)QuestionsStateEnum.Presentation){
+    <QuestionsPresentation @bind-QuestionsState="questionsState"></QuestionsPresentation>
+} else if (questionsState == (int)QuestionsStateEnum.Respond){
+    <QuestionForm @bind-QuestionsState="questionsState" Phrases="@phrases" @bind-LabelingsResponse="labelingsResponse">
+    </QuestionForm>
+} else if (questionsState == (int)QuestionsStateEnum.Revision){
+    <QuestionsRevision @bind-QuestionsState="questionsState" Phrases="@phrases" LabelingsResponse="@labelingsResponse"></QuestionsRevision>
+} else if (questionsState == (int)QuestionsStateEnum.Concluded){
+    <QuestionsConcluded></QuestionsConcluded>      
 }
 
 @code{
-    private bool finished = false;
-    private List<Phrase>? phrases;
+    private readonly int questionsToRespond = 15;
+    private int questionsState = (int)QuestionsStateEnum.Presentation;
+    private List<Phrase> phrases = new();
     private List<Labeling> labelingsResponse = new();
-    private int currentPhraseIndex = 0;
-    private int phrasesCount = 0;
-    protected override async Task OnInitializedAsync(){
-        phrases = await PhraseRepository.GetPhrases(5);
-        phrasesCount = phrases.Count;
-    }
-    private void RespondQuestion(LabelEnum label){
-        if(phrases is not null){
-            labelingsResponse.Add(new(){PhraseId = phrases[currentPhraseIndex].Id, 
-            Label = (int)label});
 
-            if(currentPhraseIndex < phrasesCount - 1){
-                currentPhraseIndex++;
-            } else if(currentPhraseIndex == phrasesCount - 1){
-                finished = true;
-            }
-            if(finished)
-                SendLabeling();
-        } 
+    protected override async Task OnInitializedAsync(){
+        var result = await ProtectedSessionStore.GetAsync<List<Phrase>>("phrases");
+        if(result.Value is not null){
+            phrases = result.Value;
+        } else {
+            phrases = await PhraseRepository.GetPhrases(questionsToRespond);
+            await ProtectedSessionStore.SetAsync("phrases", phrases);
+        }
     }
-    private async void SendLabeling(){
-        await LabelingRepository.LabelPhrasesList(labelingsResponse);
-    }
+
 }

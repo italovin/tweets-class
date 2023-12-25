@@ -1,4 +1,6 @@
-<button class="btn" @onclick="CallQuestionButtonClicked">@buttonText</button>
+@rendermode InteractiveServer
+
+<button class="btn btn-primary" @onclick="CallQuestionButtonClicked">@buttonText</button>
 
 @code{
     private string buttonText { get; set; } = "";

@@ -1,0 +1,90 @@
+@using blazor_test.Models
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inherits QuestionsSection
+@inject ProtectedSessionStorage ProtectedSessionStore
+@inject AccessKeyRepository AccessKeyRepository
+
+@if(LabelingsResponse == null){
+    <p><em>Respostas não encontradas</em></p>
+} else {
+<div>
+    <h3>Revisão das classificações</h3>
+    <hr>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Questão</th>
+                <th>Frase</th>
+                <th>Classificação</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for(int i = 0; i < LabelingsResponse.Count; i++){
+                <tr>
+                    <td>@(i+1)</td>
+                    <td>@Phrases[i].Text</td>
+                    <td>@LabelingsResponse[i].Label</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <button class="btn btn-primary" @onclick="ToFormSection">Refazer</button>
+    <hr>
+    <p>Insira o Id e a chave de autorização para envio das respostas</p>
+    <div class="form-floating mb-3">
+        <input placeholder="Id da Chave" @bind="accessKeyId">
+        <input type="password" placeholder="Chave de autorização" @bind="accessKeyString">
+    </div>
+    <div>
+        <button class="btn btn-primary" @onclick="CheckAccessKey">Enviar</button>
+    </div>
+    <div class="text-danger">
+        @accessKeyStatusMessage;
+    </div>
+</div>
+}
+
+@code{
+    [Parameter]
+    public List<Phrase> Phrases { get; set; } = new();
+    [Parameter]
+    public List<Labeling> LabelingsResponse { get; set; } = new();
+    [Parameter]
+    public EventCallback<List<Labeling>> LabelingsResponseChanged { get; set; }
+    
+    private string accessKeyStatusMessage = "";
+    private string accessKeyId = "";
+    private string accessKeyString = "";
+
+    private async Task CheckAccessKey(){
+        int id = Convert.ToInt32(accessKeyId.Trim());
+        var accessKey = AccessKeyRepository.GetAccessKey(id);
+        if(accessKey is null){
+            accessKeyStatusMessage = "Id de chave não existe";
+        } else {
+            if(AccessKeyRepository.CheckIfRevoked(accessKey)){
+                accessKeyStatusMessage = "Chave já revogada";
+            } else {
+                if(AccessKeyRepository.ValidateAccessKey(id, accessKeyString) == true){
+                    accessKeyStatusMessage = string.Empty;
+                    await ProtectedSessionStore.DeleteAsync("phrases");
+                    await AccessKeyRepository.RevokeAccessKey(accessKey);
+                    await ToConcludedSection();
+                } else if (AccessKeyRepository.ValidateAccessKey(id, accessKeyString) == false){
+                    accessKeyStatusMessage = "Chave de acesso inválida";
+                }
+            }
+        }
+
+    }
+
+    private async Task ToFormSection(){
+        LabelingsResponse.Clear();
+        await LabelingsResponseChanged.InvokeAsync(LabelingsResponse);
+        await OnQuestionsStateChanged((int)QuestionsStateEnum.Respond);
+    }
+    private async Task ToConcludedSection(){
+        await OnQuestionsStateChanged((int)QuestionsStateEnum.Concluded);
+    }
+    
+}

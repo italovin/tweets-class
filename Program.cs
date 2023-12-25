@@ -15,6 +15,7 @@ builder.Services.AddDbContext<ConnectionDbContext>(options => options.UseSqlite(
     builder.Configuration.GetConnectionString("SqliteConnection")
 ));
 
+builder.Services.AddTransient<AccessKeyRepository>();
 builder.Services.AddTransient<PhraseRepository>();
 builder.Services.AddTransient<LabelingRepository>();
 

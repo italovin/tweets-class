@@ -1,0 +1,58 @@
+@using blazor_test.Models
+@using blazor_test.Repositories
+@attribute [StreamRendering]
+@inherits QuestionsSection
+
+@if(!finished){
+    if(Phrases == null){
+    <p><em>Carregando frases...</em></p>
+    } else if(Phrases.Count == 0){
+        <p><em>Não há frases disponíveis</em></p>
+    } else {
+    <h3>Frase @(currentPhraseIndex+1)/@phrasesCount</h3>
+    <p>@Phrases[currentPhraseIndex].Text</p>
+    <div>
+        <QuestionButton label="LabelEnum.Negative" QuestionButtonClicked="RespondQuestion"/>
+        <QuestionButton label="LabelEnum.Neutral" QuestionButtonClicked="RespondQuestion"/>
+        <QuestionButton label="LabelEnum.Positive" QuestionButtonClicked="RespondQuestion"/>
+    </div>
+    }
+} else {
+    <p><b>Classificações concluídas</b></p>
+}
+@code{
+
+    private bool finished = false;
+
+    [Parameter]
+    public List<Phrase>? Phrases { get; set; }
+    [Parameter]
+    public List<Labeling> LabelingsResponse { get; set; } = new();
+    [Parameter]
+    public EventCallback<List<Labeling>> LabelingsResponseChanged { get; set; }
+    private int currentPhraseIndex = 0;
+    private int phrasesCount = 0;
+    protected override void OnInitialized()
+    {
+        phrasesCount = Phrases is null ? 0 : Phrases.Count;
+    }
+    private async Task RespondQuestion(LabelEnum label){
+        if(Phrases is not null){
+            LabelingsResponse.Add(new(){PhraseId = Phrases[currentPhraseIndex].Id, 
+            Label = (int)label});
+
+            if(currentPhraseIndex < phrasesCount - 1){
+                currentPhraseIndex++;
+            } else if(currentPhraseIndex == phrasesCount - 1){
+                finished = true;
+            }
+            if(finished){
+                await ToNextSection();
+            }
+        }
+    }
+    private async Task ToNextSection(){
+        await LabelingsResponseChanged.InvokeAsync(LabelingsResponse);
+        await OnQuestionsStateChanged((int)QuestionsStateEnum.Revision);
+    }
+}
