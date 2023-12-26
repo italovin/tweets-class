@@ -4,6 +4,7 @@
 @inherits QuestionsSection
 @inject ProtectedSessionStorage ProtectedSessionStore
 @inject AccessKeyRepository AccessKeyRepository
+@inject LabelingRepository LabelingRepository
 
 @if(LabelingsResponse == null){
     <p><em>Respostas não encontradas</em></p>
@@ -60,10 +61,11 @@
     private async Task SendResponse(){
         accessKeyStatusMessage = ValidateAccessKeyInput(out AccessKey? accessKey);
         if(!accessKeyStatusMessage.IsError && accessKey is not null){
+            var SendLabelingsResponseTask = LabelingRepository.LabelPhrasesList(LabelingsResponse);
             var RevokeAccessKeyTask = AccessKeyRepository.RevokeAccessKey(accessKey);
             var ToConcludedSectionTask = ToConcludedSection();
             await ProtectedSessionStore.DeleteAsync("phrases");
-            Task.WaitAll(RevokeAccessKeyTask, ToConcludedSectionTask);
+            Task.WaitAll(SendLabelingsResponseTask, RevokeAccessKeyTask, ToConcludedSectionTask);
         }
     }
     private KeyValidationMessage ValidateAccessKeyInput(out AccessKey? accessKey){

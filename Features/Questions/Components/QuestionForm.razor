@@ -36,7 +36,7 @@
     {
         phrasesCount = Phrases is null ? 0 : Phrases.Count;
     }
-    private async Task RespondQuestion(LabelEnum label){
+    private void RespondQuestion(LabelEnum label){
         if(Phrases is not null){
             LabelingsResponse.Add(new(){PhraseId = Phrases[currentPhraseIndex].Id, 
             Label = (int)label});
@@ -47,12 +47,13 @@
                 finished = true;
             }
             if(finished){
-                await ToNextSection();
+                ToNextSection();
             }
         }
     }
-    private async Task ToNextSection(){
-        await LabelingsResponseChanged.InvokeAsync(LabelingsResponse);
-        await OnQuestionsStateChanged((int)QuestionsStateEnum.Revision);
+    private void ToNextSection(){
+        var LabelingsResponseChangedTask = LabelingsResponseChanged.InvokeAsync(LabelingsResponse);
+        var OnQuestionsStateChangedTask = OnQuestionsStateChanged((int)QuestionsStateEnum.Revision);
+        Task.WaitAll(LabelingsResponseChangedTask, OnQuestionsStateChangedTask); 
     }
 }
