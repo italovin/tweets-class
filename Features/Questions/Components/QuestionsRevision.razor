@@ -1,5 +1,6 @@
 @using blazor_test.Models
 @using blazor_test.Repositories
+@using System.Text.RegularExpressions
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inherits QuestionsSection
 @inject ProtectedSessionStorage ProtectedSessionStore
@@ -32,10 +33,9 @@
     </table>
     <button class="btn btn-primary" @onclick="ToFormSection">Refazer</button>
     <hr>
-    <p>Insira o Id e a chave de autorização para envio das respostas</p>
+    <p>Insira a chave de acesso para envio das respostas</p>
     <div class="form-floating mb-3">
-        <input placeholder="Id da Chave" @bind="accessKeyId">
-        <input type="password" placeholder="Chave de autorização" @bind="accessKeyString">
+        <input type="password" placeholder="Chave de acesso" @bind="accessKeyString">
     </div>
     <div>
         <button class="btn btn-primary" @onclick="SendResponse">Enviar</button>
@@ -53,9 +53,7 @@
     public List<Labeling> LabelingsResponse { get; set; } = new();
     [Parameter]
     public EventCallback<List<Labeling>> LabelingsResponseChanged { get; set; }
-    
     private KeyValidationMessage accessKeyStatusMessage = new();
-    private string accessKeyId = "";
     private string accessKeyString = "";
 
     private async Task SendResponse(){
@@ -70,8 +68,18 @@
     }
     private KeyValidationMessage ValidateAccessKeyInput(out AccessKey? accessKey){
         accessKey = null;
-        string accessKeyIdTrimmed = accessKeyId.Trim();
-        bool parsed = int.TryParse(accessKeyIdTrimmed, out int id);
+        Regex accessKeyRegex = new(@"^([0-9]+)\&([A-Za-z0-9+/=]+)");
+        Match match = accessKeyRegex.Match(accessKeyString);
+        string accessKeyId = string.Empty;
+        string accessKeyCode = string.Empty;
+        if(match.Success){
+            accessKeyId = match.Groups[1].Value;
+            accessKeyCode = match.Groups[2].Value;
+        } else {
+            return new(){ Message = "Chave de acesso em formato inválido"};
+        }
+
+        bool parsed = int.TryParse(accessKeyId.Trim(), out int id);
         if(!parsed)
             return new(){ Message = "Id de chave em formato inváldio", IsError = true };
 
@@ -82,9 +90,9 @@
         if(AccessKeyRepository.CheckIfRevoked(accessKey))
             return new(){ Message = "Chave já revogada", IsError = true };
             
-        if(AccessKeyRepository.ValidateAccessKey(id, accessKeyString) == true){
+        if(AccessKeyRepository.ValidateAccessKey(id, accessKeyCode) == true){
             return new(){ Message = string.Empty};
-        } else if (AccessKeyRepository.ValidateAccessKey(id, accessKeyString) == false){
+        } else if (AccessKeyRepository.ValidateAccessKey(id, accessKeyCode) == false){
             return new(){ Message = "Chave de acesso inválida", IsError = true };
         } else {
             return new(){ Message = "Ocorreu algum problema ao buscar a chave", IsError = true };
