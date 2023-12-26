@@ -60,9 +60,10 @@
     private async Task SendResponse(){
         accessKeyStatusMessage = ValidateAccessKeyInput(out AccessKey? accessKey);
         if(!accessKeyStatusMessage.IsError && accessKey is not null){
-            await AccessKeyRepository.RevokeAccessKey(accessKey);
+            var RevokeAccessKeyTask = AccessKeyRepository.RevokeAccessKey(accessKey);
+            var ToConcludedSectionTask = ToConcludedSection();
             await ProtectedSessionStore.DeleteAsync("phrases");
-            await ToConcludedSection();
+            Task.WaitAll(RevokeAccessKeyTask, ToConcludedSectionTask);
         }
     }
     private KeyValidationMessage ValidateAccessKeyInput(out AccessKey? accessKey){
@@ -88,10 +89,11 @@
         }
     }
 
-    private async Task ToFormSection(){
+    private void ToFormSection(){
         LabelingsResponse.Clear();
-        await LabelingsResponseChanged.InvokeAsync(LabelingsResponse);
-        await OnQuestionsStateChanged((int)QuestionsStateEnum.Respond);
+        var LabelingsResponseChangedTask = LabelingsResponseChanged.InvokeAsync(LabelingsResponse);
+        var OnQuestionsStateChangedTask = OnQuestionsStateChanged((int)QuestionsStateEnum.Respond);
+        Task.WaitAll(LabelingsResponseChangedTask, OnQuestionsStateChangedTask); 
     }
     private async Task ToConcludedSection(){
         await OnQuestionsStateChanged((int)QuestionsStateEnum.Concluded);
