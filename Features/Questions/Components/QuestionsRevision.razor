@@ -37,11 +37,18 @@
     <div class="form-floating mb-3">
         <input type="password" placeholder="Chave de acesso" @bind="accessKeyString">
     </div>
-    <div>
-        <button class="btn btn-primary" @onclick="SendResponse">Enviar</button>
-    </div>
-    <div class="text-danger">
-        @accessKeyStatusMessage.Message
+    <div class="mb-3">
+        <div>
+            <button class="btn btn-primary mb-2" @onclick="SendResponse">Enviar</button>
+        </div>
+        @if(validating){
+            <div class="spinner-border text-primary" role="status">
+            </div>  
+        } else {
+            <div class="text-danger">
+                @accessKeyStatusMessage.Message
+            </div>
+        }
     </div>
 </div>
 }
@@ -55,9 +62,13 @@
     public EventCallback<List<Labeling>> LabelingsResponseChanged { get; set; }
     private KeyValidationMessage accessKeyStatusMessage = new();
     private string accessKeyString = "";
-
+    private bool validating = false;
+    
     private async Task SendResponse(){
-        accessKeyStatusMessage = ValidateAccessKeyInput(out AccessKey? accessKey);
+        validating = true;
+        await Task.Yield();
+        AccessKey? accessKey = null;
+        accessKeyStatusMessage = await ValidateAccessKeyInput(accessKey);
         if(!accessKeyStatusMessage.IsError && accessKey is not null){
             var SendLabelingsResponseTask = LabelingRepository.LabelPhrasesList(LabelingsResponse);
             var RevokeAccessKeyTask = AccessKeyRepository.RevokeAccessKey(accessKey);
@@ -66,7 +77,8 @@
             Task.WaitAll(SendLabelingsResponseTask, RevokeAccessKeyTask, ToConcludedSectionTask);
         }
     }
-    private KeyValidationMessage ValidateAccessKeyInput(out AccessKey? accessKey){
+
+    private async Task<KeyValidationMessage> ValidateAccessKeyInput(AccessKey? accessKey){
         accessKey = null;
         Regex accessKeyRegex = new(@"^([0-9]+)\&([A-Za-z0-9+/=]+)");
         Match match = accessKeyRegex.Match(accessKeyString);
@@ -76,23 +88,28 @@
             accessKeyId = match.Groups[1].Value;
             accessKeyCode = match.Groups[2].Value;
         } else {
+            validating = false;
             return new(){ Message = "Chave de acesso em formato inválido"};
         }
 
         bool parsed = int.TryParse(accessKeyId.Trim(), out int id);
-        if(!parsed)
+        if(!parsed){
+            validating = false;
             return new(){ Message = "Id de chave em formato inváldio", IsError = true };
-
-        accessKey = AccessKeyRepository.GetAccessKey(id);
-        if(accessKey is null)
+        }
+        accessKey = await AccessKeyRepository.GetAccessKey(id);
+        if(accessKey is null){
+            validating = false;
             return new(){ Message = "Id de chave não existe", IsError = true };
-
-        if(AccessKeyRepository.CheckIfRevoked(accessKey))
+        }
+        if(AccessKeyRepository.CheckIfRevoked(accessKey)){
+            validating = false;
             return new(){ Message = "Chave já revogada", IsError = true };
-            
-        if(AccessKeyRepository.ValidateAccessKey(id, accessKeyCode) == true){
+        }
+        validating = false;
+        if(await AccessKeyRepository.ValidateAccessKey(id, accessKeyCode) == true){
             return new(){ Message = string.Empty};
-        } else if (AccessKeyRepository.ValidateAccessKey(id, accessKeyCode) == false){
+        } else if (await AccessKeyRepository.ValidateAccessKey(id, accessKeyCode) == false){
             return new(){ Message = "Chave de acesso inválida", IsError = true };
         } else {
             return new(){ Message = "Ocorreu algum problema ao buscar a chave", IsError = true };
