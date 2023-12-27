@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddDbContext<ConnectionDbContext>(options => options.UseSqlite(
-    builder.Configuration.GetConnectionString("SqliteConnection")
+var mySqlConnectionString = builder.Configuration.GetConnectionString("MySqlConnection");
+builder.Services.AddDbContext<ConnectionDbContext>(options => options.UseMySql(mySqlConnectionString, ServerVersion.AutoDetect(mySqlConnectionString)
 ));
 
 builder.Services.AddTransient<AccessKeyRepository>();
