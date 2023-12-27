@@ -10,8 +10,8 @@ using blazor_test.Data;
 namespace blazortest.Migrations
 {
     [DbContext(typeof(ConnectionDbContext))]
-    [Migration("20231221194233_AccessKeySchemaMigration")]
-    partial class AccessKeySchemaMigration
+    [Migration("20231227202253_MySqlInitial")]
+    partial class MySqlInitial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -28,6 +28,9 @@ namespace blazortest.Migrations
                     b.Property<string>("HashString")
                         .IsRequired()
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("Revoked")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
