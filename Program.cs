@@ -1,9 +1,7 @@
-using System.Text.Json;
-using blazor_test.Configurations;
 using blazor_test.Data;
 using blazor_test.Features;
-using blazor_test.Models;
 using blazor_test.Repositories;
+using blazor_test.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,6 +14,9 @@ builder.Services.AddDbContext<ConnectionDbContext>(options => options.UseMySql(m
 builder.Services.AddTransient<AccessKeyRepository>();
 builder.Services.AddTransient<PhraseRepository>();
 builder.Services.AddTransient<LabelingRepository>();
+
+builder.Services.AddScoped<AccessKeyService>();
+builder.Services.AddScoped<LabelingService>();
 
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();

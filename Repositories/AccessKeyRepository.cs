@@ -11,22 +11,14 @@ public class AccessKeyRepository(ConnectionDbContext dbContext)
     public bool CheckIfRevoked(AccessKey accessKey){
         return accessKey.Revoked == 1;
     }
-    public async Task<AccessKey?> GetAccessKey(int keyId){
+    public async Task<AccessKey?> Get(int keyId){
         return await _dbContext.AccessKeys.FindAsync(keyId);
     }
-    public async Task RevokeAccessKey(AccessKey accessKey){
+    public void RevokeAccessKey(AccessKey accessKey){
         accessKey.Revoked = 1;
-        await _dbContext.SaveChangesAsync();
+        _dbContext.SaveChanges();
     }
-    public async Task<bool?> ValidateAccessKey(int keyId, string accessKeyString){
-        var accessKey = await GetAccessKey(keyId);
-        if(accessKey is null)
-            return null;
-        if (Argon2.Verify(accessKey.HashString, accessKeyString))
-        {
-            return true;
-        } else{
-            return false;
-        }
+    public bool Validate(AccessKey accessKey, string accessKeyString){
+        return Argon2.Verify(accessKey.HashString, accessKeyString);
     }
 }

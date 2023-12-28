@@ -10,8 +10,8 @@ using blazor_test.Data;
 namespace blazortest.Migrations
 {
     [DbContext(typeof(ConnectionDbContext))]
-    [Migration("20231227223926_MySqlInitialMigration")]
-    partial class MySqlInitialMigration
+    [Migration("20231228195353_ResetLocalDb")]
+    partial class ResetLocalDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace blazortest.Migrations
 {
     /// <inheritdoc />
-    public partial class MySqlInitialMigration : Migration
+    public partial class ResetLocalDb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

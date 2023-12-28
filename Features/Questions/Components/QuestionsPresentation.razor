@@ -1,5 +1,9 @@
 @using blazor_test.Models
+@using blazor_test.Models.Validations
+@using blazor_test.Services
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inherits QuestionsSection
+@inject AccessKeyService AccessKeyService
 
 <h3>Avaliação dos Tweets</h3>
 
@@ -11,12 +15,47 @@
     <p>As alternativas são: Negativo, Neutro e Positivo.</p>
 </div>
 
-<button class="btn btn-primary" @onclick="ToFormSection">Iniciar</button>
+<p>Insira a chave de acesso para envio das respostas</p>
+<div class="form-floating mb-3">
+        <input type="password" placeholder="Chave de acesso" @bind="accessKeyString">
+</div>
+<div class="mb-3">
+    <div>
+        <button class="btn btn-primary mb-3" @onclick="ValidateAccessKey">Enviar</button>
+    </div>
+    @if(validating){
+        <div class="spinner-border text-primary" role="status">
+        </div>  
+    } else {
+        <div class="text-danger">
+            @accessKeyValidationStatus.Message
+        </div>
+    }
+</div>
+
 
 @code{
-    
-    private async Task ToFormSection(){
-        await OnQuestionsStateChanged((int)QuestionsStateEnum.Respond);
+    [Parameter]
+    public int AccessKeyId { get; set; }
+    [Parameter]
+    public EventCallback<int> AccessKeyIdChanged { get; set; }
+    private string accessKeyString = string.Empty;
+    private bool validating = false;
+    private AccessKeyValidation accessKeyValidationStatus = new();
+
+    private async Task ValidateAccessKey(){
+        validating = true;
+        await Task.Yield();
+        accessKeyValidationStatus = await AccessKeyService.ValidateAccessKey(accessKeyString);
+        if(!accessKeyValidationStatus.IsError){
+            AccessKeyId = accessKeyValidationStatus.Id;
+            ToFormSection();
+        }
+        validating = false;
     }
-    
+    private void ToFormSection(){
+        var AccessKeyIdChangedTask = AccessKeyIdChanged.InvokeAsync(AccessKeyId);
+        var OnQuestionsStateChangedTask = OnQuestionsStateChanged((int)QuestionsStateEnum.Respond);
+        Task.WaitAll(AccessKeyIdChangedTask, OnQuestionsStateChangedTask);
+    }
 }

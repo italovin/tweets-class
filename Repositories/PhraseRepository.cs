@@ -23,9 +23,9 @@ public class PhraseRepository(ConnectionDbContext dbContext)
         }
         return phrases;
     }
-    public async Task InsertPhrase(Phrase phrase){
+    public void InsertPhrase(Phrase phrase){
         _dbContext.Phrases.Add(phrase);
-        await _dbContext.SaveChangesAsync();
+        _dbContext.SaveChanges();
     }
 
 }

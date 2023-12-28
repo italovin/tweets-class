@@ -8,12 +8,12 @@ public class LabelingRepository(ConnectionDbContext dbContext)
 {
     private readonly ConnectionDbContext _dbContext = dbContext;
 
-    public async Task LabelPhrase(Labeling labeling){
+    public void LabelPhrase(Labeling labeling){
         _dbContext.Labelings.Add(labeling);
-        await _dbContext.SaveChangesAsync();
+        _dbContext.SaveChanges();
     }
-    public async Task LabelPhrasesList(List<Labeling> labelings){
+    public void LabelPhrasesList(List<Labeling> labelings){
         _dbContext.Labelings.AddRange(labelings);
-        await _dbContext.SaveChangesAsync();
+        _dbContext.SaveChanges();
     }
 }
