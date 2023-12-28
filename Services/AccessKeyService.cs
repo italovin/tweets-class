@@ -31,7 +31,7 @@ public partial class AccessKeyService(AccessKeyRepository accessKeyRepository)
         }
         else
         {
-            return new() { Message = "Chave de acesso em formato inválido" };
+            return new() { Message = "Chave de acesso em formato inválido", IsError = true};
         }
 
         int accessKeyId = int.Parse(accessKeyIdString);
