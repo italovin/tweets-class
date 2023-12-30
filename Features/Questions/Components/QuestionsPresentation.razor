@@ -16,10 +16,14 @@
 </div>
 
 <p>Insira a chave de acesso para envio das respostas</p>
-<div class="form-floating mb-3">
-        <input type="password" placeholder="Chave de acesso" @bind="accessKeyString">
-</div>
-<div class="mb-3">
+
+<hr>
+
+<form>
+    <div class="form-group">
+        <div class="mb-2"><label for="accesskey-input">Chave de acesso</label></div>
+        <input class="mb-2" id="accesskey-input" type="password" placeholder="Sua chave de acesso" @bind="accessKeyString">
+    </div>
     <div>
         <button class="btn btn-primary mb-3" @onclick="ValidateAccessKey">Enviar</button>
     </div>
@@ -31,8 +35,7 @@
             @accessKeyValidationStatus.Message
         </div>
     }
-</div>
-
+</form>
 
 @code{
     [Parameter]
