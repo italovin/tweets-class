@@ -19,23 +19,18 @@
 
 <hr>
 
-<form>
-    <div class="form-group">
-        <div class="mb-2"><label for="accesskey-input">Chave de acesso</label></div>
-        <input class="mb-2" id="accesskey-input" type="password" placeholder="Sua chave de acesso" @bind="accessKeyString">
+<input class="mb-2" type="password" placeholder="Sua chave de acesso" @bind="accessKeyString">
+<div>
+    <button class="btn btn-primary mb-3" @onclick="ValidateAccessKey">Enviar</button>
+</div>
+@if(validating){
+    <div class="spinner-border text-primary" role="status">
+    </div>  
+} else {
+    <div class="text-danger">
+        @accessKeyValidationStatus.Message
     </div>
-    <div>
-        <button class="btn btn-primary mb-3" @onclick="ValidateAccessKey">Enviar</button>
-    </div>
-    @if(validating){
-        <div class="spinner-border text-primary" role="status">
-        </div>  
-    } else {
-        <div class="text-danger">
-            @accessKeyValidationStatus.Message
-        </div>
-    }
-</form>
+}
 
 @code{
     [Parameter]
