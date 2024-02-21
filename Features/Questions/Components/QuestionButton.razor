@@ -1,6 +1,6 @@
 @rendermode InteractiveServer
 
-<button class="btn" @onclick="CallQuestionButtonClicked" style="background-color: @labelInfo.RelatedColor;">@labelInfo.Text</button>
+<button type="button" class="@labelInfo.RelatedButtonStyle" @onclick="CallQuestionButtonClicked">@labelInfo.Text</button>
 
 @code{
     private LabelInfo labelInfo = new();
