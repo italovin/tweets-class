@@ -1,9 +1,11 @@
 @page "/questions"
 @using blazor_test.Repositories
 @using blazor_test.Models
+@using blazor_test.Testing
 @using blazor_test.Features.Questions.Components
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject ProtectedSessionStorage ProtectedSessionStore
+@inject IWebHostEnvironment WebHostEnvironment
 @attribute [StreamRendering(true)]
 @rendermode @(new InteractiveServerRenderMode(false))
 
@@ -32,12 +34,18 @@
 
     protected override async Task OnInitializedAsync(){
         var result = await ProtectedSessionStore.GetAsync<List<Phrase>>("phrases");
+        
+        
         if(result.Value is not null){
             phrases = result.Value;
         } else {
-            phrases = await PhraseRepository.GetPhrases(questionsToRespond);
+            if(WebHostEnvironment.IsProduction())
+                phrases = await PhraseRepository.GetPhrases(questionsToRespond);
+            else
+                phrases = PhraseDebug.GenDebugPhrases(10);
             await ProtectedSessionStore.SetAsync("phrases", phrases);
         }
+        
     }
 
 }
