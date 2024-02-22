@@ -7,6 +7,7 @@
 @inject ProtectedSessionStorage ProtectedSessionStore
 @inject AccessKeyService AccessKeyService
 @inject LabelingService LabelingService
+@inject IWebHostEnvironment WebHostEnvironment
 
 @if(LabelingsResponse == null){
     <p><em>Respostas não encontradas</em></p>
@@ -27,7 +28,7 @@
                 <tr>
                     <td>@(i+1)</td>
                     <td>@Phrases[i].Text</td>
-                    <td>@LabelParser.ParseLabel((LabelEnum)LabelingsResponse[i].Label)</td>
+                    <td>@LabelParser.ParseLabel((LabelEnum)LabelingsResponse[i].Label).Text</td>
                 </tr>
             }
         </tbody>
@@ -56,8 +57,11 @@
     
     private bool accessKeyIdFound = true; //By convention Id is 'found'
     private async Task SendResponse(){
-        LabelingService.SendLabelings(LabelingsResponse);
-        accessKeyIdFound = await AccessKeyService.Revoke(AccessKeyId);
+        if(WebHostEnvironment.IsProduction()){
+            LabelingService.SendLabelings(LabelingsResponse);
+            accessKeyIdFound = await AccessKeyService.Revoke(AccessKeyId);
+        }
+        
         if(accessKeyIdFound){
             await ProtectedSessionStore.DeleteAsync("phrases");
             await ToConcludedSection();

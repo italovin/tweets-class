@@ -5,12 +5,19 @@ using Microsoft.EntityFrameworkCore;
 
 namespace blazor_test.Repositories;
 
-public class PhraseRepository(ConnectionDbContext dbContext)
+public class PhraseRepository
 {
-    private readonly ConnectionDbContext _dbContext = dbContext;
+    private readonly ConnectionDbContext? _dbContext;
 
+    public PhraseRepository(){
+    }
+    public PhraseRepository(ConnectionDbContext dbContext){
+        _dbContext = dbContext;
+    }
     public async Task<List<Phrase>> GetPhrases(int quantity){
-        List<Phrase> underLabelingPhrases = await _dbContext.Phrases.Where(i => i.Labelings.Count < 5).ToListAsync();
+        List<Phrase> underLabelingPhrases = [];
+        if(_dbContext is not null)
+            underLabelingPhrases = await _dbContext.Phrases.Where(i => i.Labelings.Count < 5).ToListAsync();
         List<Phrase> phrases = [];
         var rnd = Random.Shared;
         for (int i = 0; i < quantity; i++)
@@ -24,8 +31,10 @@ public class PhraseRepository(ConnectionDbContext dbContext)
         return phrases;
     }
     public void InsertPhrase(Phrase phrase){
-        _dbContext.Phrases.Add(phrase);
-        _dbContext.SaveChanges();
+        if(_dbContext is not null){
+            _dbContext.Phrases.Add(phrase);
+            _dbContext.SaveChanges();
+        }
     }
 
 }

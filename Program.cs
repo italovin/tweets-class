@@ -8,8 +8,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 var mySqlConnectionString = builder.Configuration.GetConnectionString("MySqlConnection");
-builder.Services.AddDbContext<ConnectionDbContext>(options => options.UseMySql(mySqlConnectionString, ServerVersion.AutoDetect(mySqlConnectionString)
+
+if(!builder.Environment.IsDevelopment()){
+    builder.Services.AddDbContext<ConnectionDbContext>(options => options.UseMySql(mySqlConnectionString, ServerVersion.AutoDetect(mySqlConnectionString)
 ));
+}
 
 builder.Services.AddTransient<AccessKeyRepository>();
 builder.Services.AddTransient<PhraseRepository>();

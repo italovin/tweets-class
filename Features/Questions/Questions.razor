@@ -7,7 +7,7 @@
 @inject ProtectedSessionStorage ProtectedSessionStore
 @inject IWebHostEnvironment WebHostEnvironment
 @attribute [StreamRendering(true)]
-@rendermode @(new InteractiveServerRenderMode(false))
+@rendermode @(new InteractiveServerRenderMode(true))
 
 @inject PhraseRepository PhraseRepository
 
@@ -32,7 +32,7 @@
 
     private int accessKeyId = 0;
 
-    protected override async Task OnInitializedAsync(){
+    protected override async Task OnAfterRenderAsync(bool firstRender){
         var result = await ProtectedSessionStore.GetAsync<List<Phrase>>("phrases");
         
         
@@ -41,7 +41,7 @@
         } else {
             if(WebHostEnvironment.IsProduction())
                 phrases = await PhraseRepository.GetPhrases(questionsToRespond);
-            else
+            else if(WebHostEnvironment.IsDevelopment())
                 phrases = PhraseDebug.GenDebugPhrases(10);
             await ProtectedSessionStore.SetAsync("phrases", phrases);
         }

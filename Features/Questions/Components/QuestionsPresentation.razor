@@ -3,6 +3,7 @@
 @using blazor_test.Services
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inherits QuestionsSection
+@inject IWebHostEnvironment WebHostEnvironment
 @inject AccessKeyService AccessKeyService
 
 <h3>Avaliação dos Tweets</h3>
@@ -45,7 +46,8 @@
     private async Task ValidateAccessKey(){
         validating = true;
         await Task.Yield();
-        accessKeyValidationStatus = await AccessKeyService.ValidateAccessKey(accessKeyString);
+        if(WebHostEnvironment.IsProduction())
+            accessKeyValidationStatus = await AccessKeyService.ValidateAccessKey(accessKeyString);
         if(!accessKeyValidationStatus.IsError){
             AccessKeyId = accessKeyValidationStatus.Id;
             ToFormSection();
