@@ -35,13 +35,33 @@
     </table>
     <button class="btn btn-primary mb-1" @onclick="ToFormSection">Refazer</button>
     <hr>
-    <p>Se julgar que não precisa alterar as classificações, clique no botão 'Enviar'</p>
-    <button class="btn btn-primary mt-1 mb-3" @onclick="SendResponse">Enviar</button>
+    <p>Se julgar que não precisa alterar as classificações, clique no botão 'Confirmar'</p>
+    <button type="button" class="btn btn-primary mt-1 mb-3" data-bs-toggle="modal" data-bs-target="#confirmModal">Confirmar</button>
     @if(!accessKeyIdFound){
         <div class="text-danger">
             <p>Id de chave não encontrado, reinicie a página</p>
         </div>
     }
+    <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <p class="modal-title">Confirmação</p>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Verifique novamente se você deseja alterar alguma classificação. Clique em 'Enviar'
+                        caso contrário.
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @onclick="SendResponse">Enviar</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
 </div>
 }
 
