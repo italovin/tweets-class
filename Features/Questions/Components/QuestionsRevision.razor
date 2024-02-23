@@ -57,7 +57,7 @@
     
     private bool accessKeyIdFound = true; //By convention Id is 'found'
     private async Task SendResponse(){
-        if(WebHostEnvironment.IsProduction()){
+        if(WebHostEnvironment.IsProduction() || WebHostEnvironment.IsStaging()){
             LabelingService.SendLabelings(LabelingsResponse);
             accessKeyIdFound = await AccessKeyService.Revoke(AccessKeyId);
         }

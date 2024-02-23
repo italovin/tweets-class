@@ -46,7 +46,7 @@
     private async Task ValidateAccessKey(){
         validating = true;
         await Task.Yield();
-        if(WebHostEnvironment.IsProduction())
+        if(WebHostEnvironment.IsProduction() || WebHostEnvironment.IsStaging())
             accessKeyValidationStatus = await AccessKeyService.ValidateAccessKey(accessKeyString);
         if(!accessKeyValidationStatus.IsError){
             AccessKeyId = accessKeyValidationStatus.Id;
