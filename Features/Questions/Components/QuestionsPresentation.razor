@@ -23,7 +23,7 @@
 <div><label for="accesskey-input">Chave de acesso</label></div>
 <div><input id="accesskey-input" class="mb-2" type="password" placeholder="Insira sua chave de acesso" @bind="accessKeyString"></div>
 <div>
-    <button class="btn btn-primary mb-3" @onclick="ValidateAccessKey">Enviar</button>
+    <button class="btn btn-primary mb-3" style="width: 10%;" @onclick="ValidateAccessKey">Enviar</button>
 </div>
 @if(validating){
     <div class="spinner-border text-primary" role="status">
