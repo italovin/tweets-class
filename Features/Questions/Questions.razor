@@ -33,18 +33,19 @@
     private int accessKeyId = 0;
 
     protected override async Task OnAfterRenderAsync(bool firstRender){
-        var result = await ProtectedSessionStore.GetAsync<List<Phrase>>("phrases");
+        if(firstRender){
+            var result = await ProtectedSessionStore.GetAsync<List<Phrase>>("phrases");
         
-        
-        if(result.Value is not null){
-            phrases = result.Value;
-        } else {
-            //Production - Final build to azure; Staging - Testing with local mysql db
-            if(WebHostEnvironment.IsProduction() || WebHostEnvironment.IsStaging())
-                phrases = await PhraseRepository.GetPhrases(questionsToRespond);
-            else if(WebHostEnvironment.IsDevelopment())
-                phrases = PhraseDebug.GenDebugPhrases(10);
-            await ProtectedSessionStore.SetAsync("phrases", phrases);
+            if(result.Value is not null){
+                phrases = result.Value;
+            } else {
+                //Production - Final build to azure; Staging - Testing with local mysql db
+                if(WebHostEnvironment.IsProduction() || WebHostEnvironment.IsStaging())
+                    phrases = await PhraseRepository.GetPhrases(questionsToRespond);
+                else if(WebHostEnvironment.IsDevelopment())
+                    phrases = PhraseDebug.GenDebugPhrases(10);
+                await ProtectedSessionStore.SetAsync("phrases", phrases);
+            }
         }
         
     }
