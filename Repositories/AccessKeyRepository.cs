@@ -1,5 +1,5 @@
 using blazor_test.Data;
-using blazor_test.Models;
+using blazor_test.Models.ORM;
 using Isopoh.Cryptography.Argon2;
 
 namespace blazor_test.Repositories;

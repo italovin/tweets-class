@@ -1,5 +1,5 @@
 using blazor_test.Repositories;
-using blazor_test.Models;
+using blazor_test.Models.ORM;
 using blazor_test.Models.Validations;
 using System.Text.RegularExpressions;
 

@@ -1,4 +1,4 @@
-using blazor_test.Models;
+using blazor_test.Models.ORM;
 using Microsoft.EntityFrameworkCore;
 
 namespace blazor_test.Data;

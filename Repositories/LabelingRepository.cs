@@ -1,6 +1,6 @@
 using System.Data.Common;
 using blazor_test.Data;
-using blazor_test.Models;
+using blazor_test.Models.ORM;
 
 namespace blazor_test.Repositories;
 

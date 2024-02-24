@@ -1,4 +1,4 @@
-using blazor_test.Models;
+using blazor_test.Models.ORM;
 using blazor_test.Repositories;
 
 namespace blazor_test.Services;

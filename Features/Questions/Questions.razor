@@ -1,6 +1,5 @@
 @page "/questions"
 @using blazor_test.Repositories
-@using blazor_test.Models
 @using blazor_test.Testing
 @using blazor_test.Features.Questions.Components
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
@@ -27,21 +26,21 @@
 @code{
     private readonly int questionsToRespond = 15;
     private int questionsState = (int)QuestionsStateEnum.Presentation;
-    private List<Phrase> phrases = new();
+    private List<PhraseCore> phrases = new();
     private List<Labeling> labelingsResponse = new();
 
     private int accessKeyId = 0;
 
     protected override async Task OnAfterRenderAsync(bool firstRender){
         if(firstRender){
-            var result = await ProtectedSessionStore.GetAsync<List<Phrase>>("phrases");
-        
+            var result = await ProtectedSessionStore.GetAsync<List<PhraseCore>>("phrases");
+            
             if(result.Value is not null){
                 phrases = result.Value;
             } else {
                 //Production - Final build to azure; Staging - Testing with local mysql db
                 if(WebHostEnvironment.IsProduction() || WebHostEnvironment.IsStaging())
-                    phrases = await PhraseRepository.GetPhrases(questionsToRespond);
+                    phrases = PhraseCoreParser.PhrasesORMToCore(await PhraseRepository.GetPhrases(questionsToRespond));
                 else if(WebHostEnvironment.IsDevelopment())
                     phrases = PhraseDebug.GenDebugPhrases(10);
                 await ProtectedSessionStore.SetAsync("phrases", phrases);

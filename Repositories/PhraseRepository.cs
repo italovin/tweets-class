@@ -1,6 +1,6 @@
 using System.Diagnostics;
 using blazor_test.Data;
-using blazor_test.Models;
+using blazor_test.Models.ORM;
 using Microsoft.EntityFrameworkCore;
 
 namespace blazor_test.Repositories;

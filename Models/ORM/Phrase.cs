@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace blazor_test.Models;
+namespace blazor_test.Models.ORM;
 
 public class Phrase {
 
