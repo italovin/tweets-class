@@ -40,9 +40,9 @@
             } else {
                 //Production - Final build to azure; Staging - Testing with local mysql db
                 if(WebHostEnvironment.IsProduction() || WebHostEnvironment.IsStaging())
-                    phrases = PhraseCoreParser.PhrasesORMToCore(await PhraseRepository.GetPhrases(questionsToRespond));
+                    phrases = PhraseCoreParser.PhrasesORMToCore(await PhraseRepository.GetPhrasesWithShuffle(questionsToRespond));
                 else if(WebHostEnvironment.IsDevelopment())
-                    phrases = PhraseDebug.GenDebugPhrases(10);
+                    phrases = PhraseDebug.GenDebugPhrases(questionsToRespond);
                 await ProtectedSessionStore.SetAsync("phrases", phrases);
             }
         }

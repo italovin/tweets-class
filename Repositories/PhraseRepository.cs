@@ -30,6 +30,19 @@ public class PhraseRepository
         }
         return phrases;
     }
+    public async Task<List<Phrase>> GetPhrasesWithShuffle(int quantity){
+        List<Phrase> underLabelingPhrases = [];
+        if(_dbContext is not null)
+            underLabelingPhrases = await _dbContext.Phrases.Where(i => i.Labelings.Count < 5).ToListAsync();
+        int n = underLabelingPhrases.Count;
+        var rnd = Random.Shared;
+        while (n > 1) {  
+            n--;  
+            int k = rnd.Next(n + 1);
+            (underLabelingPhrases[n], underLabelingPhrases[k]) = (underLabelingPhrases[k], underLabelingPhrases[n]);
+        }
+        return underLabelingPhrases.Take(quantity).ToList();
+    }
     public void InsertPhrase(Phrase phrase){
         if(_dbContext is not null){
             _dbContext.Phrases.Add(phrase);
