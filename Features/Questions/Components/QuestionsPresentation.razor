@@ -56,7 +56,7 @@
     }
     private void ToFormSection(){
         var AccessKeyIdChangedTask = AccessKeyIdChanged.InvokeAsync(AccessKeyId);
-        var OnQuestionsStateChangedTask = OnQuestionsStateChanged((int)QuestionsStateEnum.Respond);
+        var OnQuestionsStateChangedTask = OnQuestionsStateChanged(QuestionsStateEnum.Respond);
         Task.WaitAll(AccessKeyIdChangedTask, OnQuestionsStateChangedTask);
     }
 }

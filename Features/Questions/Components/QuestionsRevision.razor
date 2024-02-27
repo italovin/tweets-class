@@ -91,10 +91,10 @@
     private void ToFormSection(){
         LabelingsResponse.Clear();
         var LabelingsResponseChangedTask = LabelingsResponseChanged.InvokeAsync(LabelingsResponse);
-        var OnQuestionsStateChangedTask = OnQuestionsStateChanged((int)QuestionsStateEnum.Respond);
+        var OnQuestionsStateChangedTask = OnQuestionsStateChanged(QuestionsStateEnum.Respond);
         Task.WaitAll(LabelingsResponseChangedTask, OnQuestionsStateChangedTask); 
     }
     private async Task ToConcludedSection(){
-        await OnQuestionsStateChanged((int)QuestionsStateEnum.Concluded);
+        await OnQuestionsStateChanged(QuestionsStateEnum.Concluded);
     }
 }

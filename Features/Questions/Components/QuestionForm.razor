@@ -53,7 +53,7 @@
     }
     private void ToNextSection(){
         var LabelingsResponseChangedTask = LabelingsResponseChanged.InvokeAsync(LabelingsResponse);
-        var OnQuestionsStateChangedTask = OnQuestionsStateChanged((int)QuestionsStateEnum.Revision);
+        var OnQuestionsStateChangedTask = OnQuestionsStateChanged(QuestionsStateEnum.Revision);
         Task.WaitAll(LabelingsResponseChangedTask, OnQuestionsStateChangedTask); 
     }
 }

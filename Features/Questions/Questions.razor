@@ -12,21 +12,21 @@
 
 <PageTitle>Questões</PageTitle>
 <CascadingValue Value="@phrases" Name="Phrases">
-    @if(questionsState == (int)QuestionsStateEnum.Presentation){
+    @if(questionsState == QuestionsStateEnum.Presentation){
         <QuestionsPresentation @bind-QuestionsState="questionsState" @bind-AccessKeyId="accessKeyId"></QuestionsPresentation>
-    } else if (questionsState == (int)QuestionsStateEnum.Respond){
+    } else if (questionsState == QuestionsStateEnum.Respond){
         <QuestionForm @bind-QuestionsState="questionsState" @bind-LabelingsResponse="labelingsResponse">
         </QuestionForm>
-    } else if (questionsState == (int)QuestionsStateEnum.Revision){
+    } else if (questionsState == QuestionsStateEnum.Revision){
         <QuestionsRevision @bind-QuestionsState="questionsState" AccessKeyId="@accessKeyId" LabelingsResponse="@labelingsResponse"></QuestionsRevision>
-    } else if (questionsState == (int)QuestionsStateEnum.Concluded){
+    } else if (questionsState == QuestionsStateEnum.Concluded){
         <QuestionsConcluded></QuestionsConcluded>      
     }
 </CascadingValue>
 
 @code{
     private readonly int questionsToRespond = 15;
-    private int questionsState = (int)QuestionsStateEnum.Presentation;
+    private QuestionsStateEnum questionsState = QuestionsStateEnum.Presentation;
     private List<PhraseCore> phrases = new();
     private List<Labeling> labelingsResponse = new();
     private int accessKeyId = 0;

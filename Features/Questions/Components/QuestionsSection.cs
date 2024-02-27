@@ -9,11 +9,11 @@ namespace blazor_test.Features.Questions;
 public class QuestionsSection:ComponentBase
 {
     [Parameter]
-    public int QuestionsState { get; set; }
+    public QuestionsStateEnum QuestionsState { get; set; }
     [Parameter]
-    public EventCallback<int> QuestionsStateChanged { get; set; }
+    public EventCallback<QuestionsStateEnum> QuestionsStateChanged { get; set; }
 
-    protected virtual async Task OnQuestionsStateChanged(int nextState){
+    protected virtual async Task OnQuestionsStateChanged(QuestionsStateEnum nextState){
         await QuestionsStateChanged.InvokeAsync(nextState);
     }
 }
