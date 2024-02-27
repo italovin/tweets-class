@@ -24,7 +24,7 @@
 
     private bool finished = false;
 
-    [Parameter]
+    [CascadingParameter(Name = "Phrases")]
     public List<PhraseCore>? Phrases { get; set; }
     [Parameter]
     public List<Labeling> LabelingsResponse { get; set; } = new();

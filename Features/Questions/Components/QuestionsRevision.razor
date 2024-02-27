@@ -68,7 +68,7 @@
 @code{
     [Parameter]
     public int AccessKeyId { get; set; }
-    [Parameter]
+    [CascadingParameter(Name = "Phrases")]
     public List<PhraseCore> Phrases { get; set; } = new();
     [Parameter]
     public List<Labeling> LabelingsResponse { get; set; } = new();

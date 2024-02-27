@@ -11,24 +11,24 @@
 @inject PhraseRepository PhraseRepository
 
 <PageTitle>Questões</PageTitle>
-
-@if(questionsState == (int)QuestionsStateEnum.Presentation){
-    <QuestionsPresentation @bind-QuestionsState="questionsState" @bind-AccessKeyId="accessKeyId"></QuestionsPresentation>
-} else if (questionsState == (int)QuestionsStateEnum.Respond){
-    <QuestionForm @bind-QuestionsState="questionsState" Phrases="@phrases" @bind-LabelingsResponse="labelingsResponse">
-    </QuestionForm>
-} else if (questionsState == (int)QuestionsStateEnum.Revision){
-    <QuestionsRevision @bind-QuestionsState="questionsState" AccessKeyId="@accessKeyId" Phrases="@phrases" LabelingsResponse="@labelingsResponse"></QuestionsRevision>
-} else if (questionsState == (int)QuestionsStateEnum.Concluded){
-    <QuestionsConcluded></QuestionsConcluded>      
-}
+<CascadingValue Value="@phrases" Name="Phrases">
+    @if(questionsState == (int)QuestionsStateEnum.Presentation){
+        <QuestionsPresentation @bind-QuestionsState="questionsState" @bind-AccessKeyId="accessKeyId"></QuestionsPresentation>
+    } else if (questionsState == (int)QuestionsStateEnum.Respond){
+        <QuestionForm @bind-QuestionsState="questionsState" @bind-LabelingsResponse="labelingsResponse">
+        </QuestionForm>
+    } else if (questionsState == (int)QuestionsStateEnum.Revision){
+        <QuestionsRevision @bind-QuestionsState="questionsState" AccessKeyId="@accessKeyId" LabelingsResponse="@labelingsResponse"></QuestionsRevision>
+    } else if (questionsState == (int)QuestionsStateEnum.Concluded){
+        <QuestionsConcluded></QuestionsConcluded>      
+    }
+</CascadingValue>
 
 @code{
     private readonly int questionsToRespond = 15;
     private int questionsState = (int)QuestionsStateEnum.Presentation;
     private List<PhraseCore> phrases = new();
     private List<Labeling> labelingsResponse = new();
-
     private int accessKeyId = 0;
 
     protected override async Task OnAfterRenderAsync(bool firstRender){
