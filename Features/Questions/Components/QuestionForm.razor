@@ -9,7 +9,7 @@
     } else if(Phrases.Count == 0){
         <p><em>Não há frases disponíveis</em></p>
     } else {
-    <h3>Frase @(currentPhraseIndex+1)/@phrasesCount</h3>
+    <h3>Frase @(currentPhraseIndex+1) de @phrasesCount</h3>
     <p>@Phrases[currentPhraseIndex].Text</p>
     <div>
         <QuestionButton label="LabelEnum.Negative" QuestionButtonClicked="RespondQuestion"/>
