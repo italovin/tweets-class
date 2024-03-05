@@ -9,9 +9,11 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 var mySqlConnectionString = builder.Configuration.GetConnectionString("MySqlConnection");
 
-if(builder.Environment.IsProduction() || builder.Environment.IsStaging()){
-    builder.Services.AddDbContext<ConnectionDbContext>(options => options.UseMySql(mySqlConnectionString, ServerVersion.AutoDetect(mySqlConnectionString)
-));
+if(builder.Environment.IsProduction()){
+    if(builder.Environment.IsStaging()){
+        builder.Host.ConfigureWebHostDefaults(webBuilder => {webBuilder.UseStaticWebAssets();});
+    }
+    builder.Services.AddDbContext<ConnectionDbContext>(options => options.UseMySql(mySqlConnectionString, ServerVersion.AutoDetect(mySqlConnectionString)));
 }
 
 builder.Services.AddTransient<AccessKeyRepository>();
@@ -23,6 +25,7 @@ builder.Services.AddScoped<LabelingService>();
 
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
 
 var app = builder.Build();
 
