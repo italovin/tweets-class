@@ -50,11 +50,11 @@ public partial class AccessKeyService(AccessKeyRepository accessKeyRepository)
             return new(){ Message = "Chave de acesso inválida", IsError = true };
         }
     }
-    private Match MatchAccessKeyPattern(string accessKeyString){
+    private static Match MatchAccessKeyPattern(string accessKeyString){
         Regex accessKeyRegex = AccessKeyRegex();
         return accessKeyRegex.Match(accessKeyString);
     }
 
-    [GeneratedRegex(@"^([0-9]+)\&([A-Za-z0-9+/=]+)")]
+    [GeneratedRegex(@"^([0-9]+)\&([A-Za-z0-9+/=]{44})")]
     private static partial Regex AccessKeyRegex();
 }
