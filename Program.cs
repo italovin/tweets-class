@@ -3,6 +3,7 @@ using blazor_test.Features;
 using blazor_test.Repositories;
 using blazor_test.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Update;
 
 var builder = WebApplication.CreateBuilder(args);
 
