@@ -21,7 +21,25 @@
 <div>
     <h3>Revisão das classificações</h3>
     <hr>
-    <button class="btn btn-primary mb-1" @onclick="ToFormSection">Refazer</button>
+    <button class="btn btn-primary mb-1" data-bs-toggle="modal" data-bs-target="#revisionModal">Refazer</button>
+    <div class="modal fade" id="revisionModal" tabindex="-1" aria-labelledby="revisionModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">       
+            <div class="modal-content">
+                <div class="modal-header">
+                    <p class="modal-title">Confirmação</p>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Deseja refazer as questões?
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @onclick="ToFormSection">Refazer</button>
+                </div>
+            </div>
+        </div> 
+    </div>
     <hr>
     <p>Se julgar que não precisa alterar as classificações, clique no botão 'Confirmar'</p>
     <button type="button" class="btn btn-primary mt-1 mb-3" data-bs-toggle="modal" data-bs-target="#confirmModal">Confirmar</button>
