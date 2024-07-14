@@ -1,7 +1,13 @@
-@using blazor_test.Models
-@using blazor_test.Repositories
+@using Models
+@using Repositories
+@using global::Features.Questions
+@using global::Features.Questions.Components
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @attribute [StreamRendering]
 @inherits QuestionsSection
+@inject ProtectedLocalStorage ProtectedLocalStore
+
+@namespace Features.Questions.Components
 
 @if(!finished){
     if(Phrases == null){
@@ -34,13 +40,14 @@
     private int phrasesCount = 0;
     protected override void OnInitialized()
     {
+        currentPhraseIndex = LabelingsResponse.Count;
         phrasesCount = Phrases is null ? 0 : Phrases.Count;
     }
-    private void RespondQuestion(LabelEnum label){
+    private async Task RespondQuestion(LabelEnum label){
         if(Phrases is not null){
             LabelingsResponse.Add(new(){PhraseId = Phrases[currentPhraseIndex].Id, 
             Label = (int)label});
-
+            await ProtectedLocalStore.SetAsync("labelings", LabelingsResponse);
             if(currentPhraseIndex < phrasesCount - 1){
                 currentPhraseIndex++;
             } else if(currentPhraseIndex == phrasesCount - 1){

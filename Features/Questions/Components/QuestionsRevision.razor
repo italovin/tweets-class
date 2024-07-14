@@ -1,13 +1,19 @@
-@using blazor_test.Models
-@using blazor_test.Repositories
-@using blazor_test.Services
+@using Models.Core
+@using Models.ORM
+@using Repositories
+@using Services
 @using System.Text.RegularExpressions
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@using global::Features.Questions
+@using global::Features.Questions.Components
+@using global::Features.Questions.Helpers
 @inherits QuestionsSection
-@inject ProtectedSessionStorage ProtectedSessionStore
+@inject ProtectedLocalStorage ProtectedLocalStore
 @inject AccessKeyService AccessKeyService
 @inject LabelingService LabelingService
 @inject IWebHostEnvironment WebHostEnvironment
+
+@namespace Features.Questions.Components
 
 @if(LabelingsResponse == null){
     <p><em>Respostas não encontradas</em></p>
@@ -15,24 +21,6 @@
 <div>
     <h3>Revisão das classificações</h3>
     <hr>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Questão</th>
-                <th>Frase</th>
-                <th>Classificação</th>
-            </tr>
-        </thead>
-        <tbody>
-            @for(int i = 0; i < LabelingsResponse.Count; i++){
-                <tr>
-                    <td>@(i+1)</td>
-                    <td>@Phrases[i].Text</td>
-                    <td>@LabelParser.ParseLabel((LabelEnum)LabelingsResponse[i].Label).Text</td>
-                </tr>
-            }
-        </tbody>
-    </table>
     <button class="btn btn-primary mb-1" @onclick="ToFormSection">Refazer</button>
     <hr>
     <p>Se julgar que não precisa alterar as classificações, clique no botão 'Confirmar'</p>
@@ -81,15 +69,14 @@
             LabelingService.SendLabelings(LabelingsResponse);
             accessKeyIdFound = await AccessKeyService.Revoke(AccessKeyId);
         }
-        
         if(accessKeyIdFound){
-            await ProtectedSessionStore.DeleteAsync("phrases");
             await ToConcludedSection();
         }
     }
 
-    private void ToFormSection(){
+    private async void ToFormSection(){
         LabelingsResponse.Clear();
+        await ProtectedLocalStore.DeleteAsync("labelings");
         var LabelingsResponseChangedTask = LabelingsResponseChanged.InvokeAsync(LabelingsResponse);
         var OnQuestionsStateChangedTask = OnQuestionsStateChanged(QuestionsStateEnum.Respond);
         Task.WaitAll(LabelingsResponseChangedTask, OnQuestionsStateChangedTask); 

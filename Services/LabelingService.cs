@@ -1,7 +1,7 @@
-using blazor_test.Models.ORM;
-using blazor_test.Repositories;
+using Models.ORM;
+using Repositories;
 
-namespace blazor_test.Services;
+namespace Services;
 
 public class LabelingService(LabelingRepository labelingRepository){
     private readonly LabelingRepository _labelingRepository = labelingRepository;

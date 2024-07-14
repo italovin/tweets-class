@@ -1,4 +1,4 @@
-namespace blazor_test.Models.Validations;
+namespace Models.Validations;
 
 public class AccessKeyValidation{
     public int Id { get; set; } = 0;

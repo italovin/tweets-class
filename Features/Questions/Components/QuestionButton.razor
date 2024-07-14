@@ -1,4 +1,8 @@
+@using global::Features.Questions
+@using global::Features.Questions.Helpers
 @rendermode InteractiveServer
+
+@namespace Features.Questions.Components
 
 <button type="button" class="@labelInfo.RelatedButtonStyle me-2" style="width: 15%;" @onclick="CallQuestionButtonClicked">@labelInfo.Text</button>
 
@@ -10,7 +14,6 @@
     public EventCallback<LabelEnum> QuestionButtonClicked { get; set; }
     protected override void OnInitialized(){
         labelInfo = LabelParser.ParseLabel(label);
-
     } 
     private async Task CallQuestionButtonClicked(){
         await QuestionButtonClicked.InvokeAsync(label);

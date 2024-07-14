@@ -1,6 +1,6 @@
-using blazor_test.Models.Core;
+using Models.Core;
 
-namespace blazor_test.Testing;
+namespace Testing;
 
 public class PhraseDebug {
 

@@ -1,6 +1,7 @@
-using blazor_test.Models.Core;
-using blazor_test.Models.ORM;
+using Models.Core;
+using Models.ORM;
 
+namespace Features.Questions.Helpers;
 public class PhraseCoreParser{
 
     public static List<PhraseCore> PhrasesORMToCore(List<Phrase> phrasesORM){

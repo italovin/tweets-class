@@ -1,43 +1,46 @@
-using blazor_test.Data;
-using blazor_test.Models.Core;
-using blazor_test.Models.ORM;
+using Data;
+using Models.Core;
+using Models.ORM;
 using Isopoh.Cryptography.Argon2;
 using Microsoft.EntityFrameworkCore;
 
-namespace blazor_test.Repositories;
+namespace Repositories;
 
 public class AccessKeyRepository
 {
-    private readonly ConnectionDbContext? _dbContext;
+    private readonly IDbContextFactory<ConnectionDbContext>? _dbContextFactory;
 
     public AccessKeyRepository(){
     }
-    public AccessKeyRepository(ConnectionDbContext dbContext){
-        _dbContext = dbContext;
+    public AccessKeyRepository(IDbContextFactory<ConnectionDbContext> dbContextFactory){
+        _dbContextFactory = dbContextFactory;
     }
     public bool CheckIfRevoked(AccessKey accessKey){
         return accessKey.Revoked == 1;
     }
     public async Task<AccessKeyRevoke?> GetFirst(){
-        if(_dbContext is not null){
-            var result = await _dbContext.AccessKeys.FirstOrDefaultAsync(x => x.Revoked == 1);
+        if(_dbContextFactory is not null){
+            using var dbContext = _dbContextFactory.CreateDbContext();
+            var result = await dbContext.AccessKeys.FirstOrDefaultAsync(x => x.Revoked == 1);
             if (result is not null)
                 return new AccessKeyRevoke{ Id = result.Id};
             else
                 return new AccessKeyRevoke{ Id = 0};
-        }else
+        } else
             return null;
     }
     public async Task<AccessKey?> Get(int keyId){
-        if(_dbContext is not null)
-            return await _dbContext.AccessKeys.FindAsync(keyId);
-        else
+        if(_dbContextFactory is not null){
+            using var dbContext = _dbContextFactory.CreateDbContext();
+            return await dbContext.AccessKeys.FindAsync(keyId);
+        } else
             return null;
     }
     public void RevokeAccessKey(AccessKey accessKey){
-        if(_dbContext is not null){
+        if(_dbContextFactory is not null){
+            using var dbContext = _dbContextFactory.CreateDbContext();
             accessKey.Revoked = 1;
-            _dbContext.SaveChanges();
+            dbContext.SaveChanges();
         }
     }
     public bool Validate(AccessKey accessKey, string accessKeyString){

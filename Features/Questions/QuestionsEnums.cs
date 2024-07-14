@@ -1,4 +1,4 @@
-namespace blazor_test.Features.Questions;
+namespace Features.Questions;
 
 public enum LabelEnum
 {

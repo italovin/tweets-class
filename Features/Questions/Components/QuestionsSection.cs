@@ -1,10 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 
-namespace blazor_test.Features.Questions;
+namespace Features.Questions.Components;
 
 public class QuestionsSection:ComponentBase
 {

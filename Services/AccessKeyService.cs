@@ -1,14 +1,13 @@
-using blazor_test.Repositories;
-using blazor_test.Models.ORM;
-using blazor_test.Models.Validations;
+using Models.ORM;
+using Models.Validations;
 using System.Text.RegularExpressions;
+using Repositories;
 
-namespace blazor_test.Services;
+namespace Services;
 
 public partial class AccessKeyService(AccessKeyRepository accessKeyRepository)
 {
     private readonly AccessKeyRepository _accessKeyRepository = accessKeyRepository;
-
 
     public async Task<bool> Revoke(int accessKeyId){
         AccessKey? accessKey = await _accessKeyRepository.Get(accessKeyId);

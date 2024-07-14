@@ -1,25 +1,24 @@
-using blazor_test.Data;
-using blazor_test.Features;
-using blazor_test.Repositories;
-using blazor_test.Services;
+using Data;
+using Repositories;
+using Services;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Update;
+using tweets_class.Features;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 var mySqlConnectionString = builder.Configuration.GetConnectionString("MySqlConnection");
 
-if(builder.Environment.IsProduction()){
+if(builder.Environment.IsProduction() || builder.Environment.IsStaging()){
     if(builder.Environment.IsStaging()){
-        builder.Host.ConfigureWebHostDefaults(webBuilder => {webBuilder.UseStaticWebAssets();});
+        builder.WebHost.UseStaticWebAssets();
     }
-    builder.Services.AddDbContext<ConnectionDbContext>(options => options.UseMySql(mySqlConnectionString, ServerVersion.AutoDetect(mySqlConnectionString)));
+    builder.Services.AddDbContextFactory<ConnectionDbContext>(options => options.UseMySql(mySqlConnectionString, ServerVersion.AutoDetect(mySqlConnectionString)));
 }
 
-builder.Services.AddTransient<AccessKeyRepository>();
-builder.Services.AddTransient<PhraseRepository>();
-builder.Services.AddTransient<LabelingRepository>();
+builder.Services.AddScoped<AccessKeyRepository>();
+builder.Services.AddScoped<PhraseRepository>();
+builder.Services.AddScoped<LabelingRepository>();
 
 builder.Services.AddScoped<AccessKeyService>();
 builder.Services.AddScoped<LabelingService>();

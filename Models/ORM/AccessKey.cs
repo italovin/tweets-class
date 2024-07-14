@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace blazor_test.Models.ORM;
+namespace Models.ORM;
 
 public class AccessKey{
     [Key]

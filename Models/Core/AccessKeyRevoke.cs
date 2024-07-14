@@ -1,4 +1,4 @@
-namespace blazor_test.Models.Core;
+namespace Models.Core;
 
 public class AccessKeyRevoke{
     public int Id { get; set; }

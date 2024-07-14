@@ -1,5 +1,4 @@
-using blazor_test.Features.Questions;
-
+namespace Features.Questions.Helpers;
 public class LabelInfo {
     public string Text { get; set; } = "Indefinido";
     public string RelatedButtonStyle { get; set; } = "btn";

@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace blazortest.Migrations
+namespace tweetsclass.Migrations
 {
     /// <inheritdoc />
-    public partial class ResetLocalDb : Migration
+    public partial class AddDbFactory : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

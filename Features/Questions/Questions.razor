@@ -1,49 +1,62 @@
 @page "/questions"
-@using blazor_test.Repositories
-@using blazor_test.Testing
-@using blazor_test.Features.Questions.Components
+@using Repositories
+@using Testing
+@using Features.Questions.Components
+@using global::Features.Questions
+@using global::Features.Questions.Helpers
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject ProtectedSessionStorage ProtectedSessionStore
+@inject ProtectedLocalStorage ProtectedLocalStore
 @inject IWebHostEnvironment WebHostEnvironment
 @attribute [StreamRendering(true)]
-@rendermode @(new InteractiveServerRenderMode(true))
+@rendermode InteractiveServer
 
 @inject PhraseRepository PhraseRepository
 
+@namespace Features.Questions
+
 <PageTitle>Questões</PageTitle>
 <CascadingValue Value="@phrases" Name="Phrases">
-    @if(questionsState == QuestionsStateEnum.Presentation){
-        <QuestionsPresentation @bind-QuestionsState="questionsState" @bind-AccessKeyId="accessKeyId"></QuestionsPresentation>
-    } else if (questionsState == QuestionsStateEnum.Respond){
-        <QuestionForm @bind-QuestionsState="questionsState" @bind-LabelingsResponse="labelingsResponse">
-        </QuestionForm>
-    } else if (questionsState == QuestionsStateEnum.Revision){
-        <QuestionsRevision @bind-QuestionsState="questionsState" AccessKeyId="@accessKeyId" LabelingsResponse="@labelingsResponse"></QuestionsRevision>
-    } else if (questionsState == QuestionsStateEnum.Concluded){
-        <QuestionsConcluded></QuestionsConcluded>      
-    }
+    <CascadingValue Value="@questionsFinished" Name="QuestionsFinished">
+        @if(questionsState == QuestionsStateEnum.Presentation){
+            <QuestionsPresentation @bind-QuestionsState="questionsState" @bind-AccessKeyId="accessKeyId"
+             LabelingsResponse="labelingsResponse"></QuestionsPresentation>
+        } else if (questionsState == QuestionsStateEnum.Respond){
+            <QuestionForm @bind-QuestionsState="questionsState" @bind-LabelingsResponse="labelingsResponse">
+            </QuestionForm>
+        } else if (questionsState == QuestionsStateEnum.Revision){
+            <QuestionsRevision @bind-QuestionsState="questionsState" AccessKeyId="accessKeyId" @bind-LabelingsResponse="labelingsResponse"></QuestionsRevision>
+        } else if (questionsState == QuestionsStateEnum.Concluded){
+            <QuestionsConcluded></QuestionsConcluded>      
+        }
+    </CascadingValue>
 </CascadingValue>
 
 @code{
-    private readonly int questionsToRespond = 15;
+    private int questionsToRespond = 0;
+    private bool questionsFinished = false;
     private QuestionsStateEnum questionsState = QuestionsStateEnum.Presentation;
     private List<PhraseCore> phrases = new();
     private List<Labeling> labelingsResponse = new();
     private int accessKeyId = 0;
-
     protected override async Task OnAfterRenderAsync(bool firstRender){
         if(firstRender){
-            var result = await ProtectedSessionStore.GetAsync<List<PhraseCore>>("phrases");
+            //Production - Final build to azure; Staging - Testing with local mysql db
+            if(WebHostEnvironment.IsProduction() || WebHostEnvironment.IsStaging()){
+                var ormPhrases = await PhraseRepository.GetAllPhrases();
+                phrases = PhraseCoreParser.PhrasesORMToCore(ormPhrases);
+                questionsToRespond = phrases.Count;
+            }
+            else if(WebHostEnvironment.IsDevelopment())
+                phrases = PhraseDebug.GenDebugPhrases(questionsToRespond);
             
-            if(result.Value is not null){
-                phrases = result.Value;
-            } else {
-                //Production - Final build to azure; Staging - Testing with local mysql db
-                if(WebHostEnvironment.IsProduction() || WebHostEnvironment.IsStaging())
-                    phrases = PhraseCoreParser.PhrasesORMToCore(await PhraseRepository.GetPhrasesWithShuffle(questionsToRespond));
-                else if(WebHostEnvironment.IsDevelopment())
-                    phrases = PhraseDebug.GenDebugPhrases(questionsToRespond);
-                await ProtectedSessionStore.SetAsync("phrases", phrases);
+            var labelingsResult = await ProtectedLocalStore.GetAsync<List<Labeling>>("labelings");
+            if(labelingsResult.Value is not null){
+                labelingsResponse = labelingsResult.Value;
+                if(labelingsResponse.Count == questionsToRespond){
+                    questionsFinished = true;
+                    StateHasChanged();
+                }
             }
         }
         

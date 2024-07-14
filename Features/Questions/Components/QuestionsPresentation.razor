@@ -1,10 +1,15 @@
-@using blazor_test.Models
-@using blazor_test.Models.Validations
-@using blazor_test.Services
+@using Models
+@using Models.Validations
+@using Services
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@using global::Features.Questions
+@using global::Features.Questions.Components
 @inherits QuestionsSection
 @inject IWebHostEnvironment WebHostEnvironment
 @inject AccessKeyService AccessKeyService
+@inject ProtectedLocalStorage ProtectedLocalStore
+
+@namespace Features.Questions.Components
 
 <h3>Avaliação dos Tweets</h3>
 
@@ -35,6 +40,12 @@
 }
 
 @code{
+    [CascadingParameter(Name = "QuestionsFinished")]
+    public bool QuestionsFinished { get; set; }
+    [Parameter]
+    public List<Labeling> LabelingsResponse { get; set; } = new();
+    [Parameter]
+    public EventCallback<List<Labeling>> LabelingsResponseChanged { get; set; }
     [Parameter]
     public int AccessKeyId { get; set; }
     [Parameter]
@@ -42,7 +53,6 @@
     private string accessKeyString = string.Empty;
     private bool validating = false;
     private AccessKeyValidation accessKeyValidationStatus = new();
-
     private async Task ValidateAccessKey(){
         validating = true;
         await Task.Yield();
@@ -50,13 +60,31 @@
             accessKeyValidationStatus = await AccessKeyService.ValidateAccessKey(accessKeyString);
         if(!accessKeyValidationStatus.IsError){
             AccessKeyId = accessKeyValidationStatus.Id;
-            ToFormSection();
+            var accessKeyIdResult = await ProtectedLocalStore.GetAsync<int>("accessKeyId");
+            if(accessKeyIdResult.Success){
+                if(accessKeyIdResult.Value != AccessKeyId){
+                    LabelingsResponse.Clear();
+                    await LabelingsResponseChanged.InvokeAsync(LabelingsResponse);
+                    await ProtectedLocalStore.DeleteAsync("labelings");
+                }
+            }
+            await ProtectedLocalStore.SetAsync("accessKeyId", accessKeyValidationStatus.Id);
+            if(QuestionsFinished){
+                ToRevisionSection();
+            } else {
+                ToFormSection();
+            }
         }
         validating = false;
     }
     private void ToFormSection(){
         var AccessKeyIdChangedTask = AccessKeyIdChanged.InvokeAsync(AccessKeyId);
         var OnQuestionsStateChangedTask = OnQuestionsStateChanged(QuestionsStateEnum.Respond);
+        Task.WaitAll(AccessKeyIdChangedTask, OnQuestionsStateChangedTask);
+    }
+    private void ToRevisionSection(){
+        var AccessKeyIdChangedTask = AccessKeyIdChanged.InvokeAsync(AccessKeyId);
+        var OnQuestionsStateChangedTask = OnQuestionsStateChanged(QuestionsStateEnum.Revision);
         Task.WaitAll(AccessKeyIdChangedTask, OnQuestionsStateChangedTask);
     }
 }

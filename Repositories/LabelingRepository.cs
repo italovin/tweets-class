@@ -1,28 +1,30 @@
-using System.Data.Common;
-using blazor_test.Data;
-using blazor_test.Models.ORM;
+using Data;
+using Models.ORM;
+using Microsoft.EntityFrameworkCore;
 
-namespace blazor_test.Repositories;
+namespace Repositories;
 
 public class LabelingRepository
 {
-    private readonly ConnectionDbContext? _dbContext;
+    private readonly IDbContextFactory<ConnectionDbContext>? _dbContextFactory;
 
     public LabelingRepository(){
     }
-    public LabelingRepository(ConnectionDbContext dbContext){
-        _dbContext = dbContext;
+    public LabelingRepository(IDbContextFactory<ConnectionDbContext> dbContextFactory){
+        _dbContextFactory = dbContextFactory;
     }
     public void LabelPhrase(Labeling labeling){
-        if(_dbContext is not null){
-            _dbContext.Labelings.Add(labeling);
-            _dbContext.SaveChanges();
+        if(_dbContextFactory is not null){
+            using var dbContext = _dbContextFactory.CreateDbContext();
+            dbContext.Labelings.Add(labeling);
+            dbContext.SaveChanges();
         }
     }
     public void LabelPhrasesList(List<Labeling> labelings){
-        if(_dbContext is not null){
-            _dbContext.Labelings.AddRange(labelings);
-            _dbContext.SaveChanges();
+        if(_dbContextFactory is not null){
+            using var dbContext = _dbContextFactory.CreateDbContext();
+            dbContext.Labelings.AddRange(labelings);
+            dbContext.SaveChanges();
         }
     }
 }
