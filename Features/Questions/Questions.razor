@@ -43,7 +43,7 @@
         if(firstRender){
             //Production - Final build to azure; Staging - Testing with local mysql db
             if(WebHostEnvironment.IsProduction() || WebHostEnvironment.IsStaging()){
-                var ormPhrases = await PhraseRepository.GetPhrases(5);
+                var ormPhrases = await PhraseRepository.GetAllPhrases();
                 phrases = PhraseCoreParser.PhrasesORMToCore(ormPhrases);
                 questionsToRespond = phrases.Count;
             }
